@@ -10,7 +10,7 @@ import { FaRegCalendarCheck } from 'react-icons/fa';
 const NavBar = () => {
   const navigation = [
     { label: 'Dashboard', href: '/', id: 0 },
-    { label: 'Events', href: '/events', id: 1 },
+    { label: 'Events', href: '/Events', id: 1 },
   ];
 
   const currentPath = usePathname();
@@ -29,8 +29,10 @@ const NavBar = () => {
               <Link
                 href={item.href}
                 className={`${
-                  currentPath === item.href ? 'text-black' : 'text-zinc-500'
-                }`}
+                  currentPath === item.href
+                    ? 'text-black'
+                    : 'text-zinc-500 hover:text-zinc-700'
+                } transition-colors`}
               >
                 {item.label}
               </Link>
