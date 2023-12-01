@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 import { usePathname } from 'next/navigation';
 
-import { FaRegCalendarCheck } from 'react-icons/fa';
+import { FcCalendar } from 'react-icons/fc';
 
 const NavBar = () => {
   const navigation = [
@@ -19,9 +19,9 @@ const NavBar = () => {
 
   return (
     <>
-      <nav className="flex min-w-full space-x-10 pl-10 bg-slate-100 p-6">
+      <nav className="flex min-w-full space-x-10 pl-10 bg-zinc-100 p-6">
         <Link className="text-2xl" href="/">
-          <FaRegCalendarCheck />
+          <FcCalendar />
         </Link>
         <ul className="flex space-x-6">
           {navigation.map((item) => (
