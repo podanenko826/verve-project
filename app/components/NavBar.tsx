@@ -10,9 +10,8 @@ import { FaFacebook, FaInstagramSquare } from 'react-icons/fa';
 
 const NavBar = () => {
   const navigation = [
-    { label: 'Home', href: '/', id: 0 },
-    { label: 'Dashboard', href: '/Dashboard', id: 1 },
-    { label: 'Events', href: '/Events', id: 2 },
+    { label: 'Dashboard', href: '/', id: 0 },
+    { label: 'Events', href: '/Events', id: 1 },
   ];
   const currentPath = usePathname();
 
@@ -20,7 +19,7 @@ const NavBar = () => {
 
   return (
     <>
-      <nav className="flex justify-around items-center min-w-full space-x-10 p-6">
+      <nav className="flex justify-around items-center min-w-full p-6">
         <ul className="flex space-x-6">
           {navigation.map((item) => (
             <li key={item.id}>
@@ -39,9 +38,9 @@ const NavBar = () => {
         </ul>
         <Link className="text-3xl first-letter:font-normal" href="/">
           {/* <FcCalendar /> */}
-          <h1 className="font-light">Verve</h1>
+          <h1 className="font-light mr-20">Verve</h1>
         </Link>
-        <ul className="flex text-3xl w-52 justify-center space-x-2">
+        <ul className="flex text-3xl justify-center space-x-2">
           <li>
             <Link href="#">
               <FaInstagramSquare />
