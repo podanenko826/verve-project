@@ -11,11 +11,11 @@ datasource db {
 }
 
 model Event {
-  event_id Int      @id @default(autoincrement())
-  title    String   @db.VarChar(255)
-  start    DateTime
-  end      DateTime
-  status   Status   @default(OPEN)
+  event_id Int    @id @default(autoincrement())
+  title    String @db.VarChar(255)
+  start    String @db.VarChar(255)
+  end      String @db.VarChar(255)
+  status   Status @default(OPEN)
 }
 
 enum Status {
