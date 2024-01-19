@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 
 // import { FcCalendar } from 'react-icons/fc';
 import { FaFacebook, FaInstagramSquare } from 'react-icons/fa';
+import { AiFillCarryOut } from 'react-icons/ai';
 
 const NavBar = () => {
   const navigation = [
@@ -19,7 +20,7 @@ const NavBar = () => {
 
   return (
     <>
-      <nav className="flex justify-around items-center min-w-full p-6">
+      <nav className="flex justify-around items-center min-w-full h-20">
         <ul className="flex space-x-6">
           {navigation.map((item) => (
             <li key={item.id}>
@@ -36,11 +37,11 @@ const NavBar = () => {
             </li>
           ))}
         </ul>
-        <Link className="text-3xl first-letter:font-normal" href="/">
-          {/* <FcCalendar /> */}
-          <h1 className="font-light mr-20">Verve</h1>
+        <Link className="flex text-3xl" href="/">
+          <AiFillCarryOut className="mt-0.5 pt-0.5" />
+          <h1 className="font-light">Verve</h1>
         </Link>
-        <ul className="flex text-3xl justify-center space-x-2">
+        <ul className="flex text-3xl justify-center w-40 space-x-2">
           <li>
             <Link href="#">
               <FaInstagramSquare />
