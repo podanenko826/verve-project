@@ -129,7 +129,6 @@ const ISheduller = () => {
           onConfirm={handleConfirm}
           onDelete={handleDelete}
           onEventDrop={handleUpdate}
-          editable={false}
         />
       )}
     </>
