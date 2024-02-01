@@ -38,13 +38,6 @@ const ISheduller = () => {
     fetchData();
   }, []);
 
-  // const postDataToServer = async (data) => {
-  //   try {
-  //     const response = await axios.post('/api/events', data);
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //   }
-  // };
   const addEventOnServer = async (
     data: any
   ): Promise<ProcessedEvent | undefined> => {
@@ -69,9 +62,6 @@ const ISheduller = () => {
       ...event,
     };
 
-    // if (action === 'edit') {
-    //   returnedEvent = event;
-    // }
     if (action === 'create') {
       await addEventOnServer(returnedEvent);
     }
@@ -79,7 +69,7 @@ const ISheduller = () => {
     return returnedEvent;
   };
 
-  const deleteEventOnServer = async (deletedId: number): Promise<boolean> => {
+  async function deleteEventOnServer(deletedId: any) {
     try {
       const response = await axios.delete(`/api/events/${deletedId}`);
 
@@ -93,12 +83,34 @@ const ISheduller = () => {
       console.error('Error deleting event:', error);
       throw error; // Propagate the error or handle it as needed
     }
-  };
+  }
 
   const handleDelete = async (deletedId: any) => {
     await deleteEventOnServer(deletedId);
 
     return deletedId;
+  };
+
+  async function updateEventOnServer(updatedId: any) {
+    try {
+      const response = await axios.put(`/api/events/${updatedId}`);
+
+      if (response.status === 200) {
+        return true;
+      } else {
+        console.error('Unexpected response status:', response.status);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error updating event:', error);
+      throw error;
+    }
+  }
+
+  const handleUpdate = async (updatedId: any) => {
+    await updateEventOnServer(updatedId);
+
+    return updatedId;
   };
 
   return (
@@ -116,6 +128,8 @@ const ISheduller = () => {
           hourFormat="24"
           onConfirm={handleConfirm}
           onDelete={handleDelete}
+          onEventDrop={handleUpdate}
+          editable={false}
         />
       )}
     </>
