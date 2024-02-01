@@ -114,7 +114,7 @@ const ISheduller = () => {
   };
 
   return (
-    <>
+    <div className="">
       {events !== null && (
         <Scheduler
           view="day"
@@ -131,7 +131,7 @@ const ISheduller = () => {
           onEventDrop={handleUpdate}
         />
       )}
-    </>
+    </div>
   );
 };
 
