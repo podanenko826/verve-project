@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import NavBar from './NavBar';
+import SideBar from './SideBar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,9 +19,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gradienn-radial`}>
-        <NavBar />
-        {children}
+      <body className={`${inter.className} bg-gradienn-radial flex w-screen`}>
+        <div>
+          <SideBar />
+        </div>
+        <div className="w-screen">
+          <NavBar />
+          {children}
+        </div>
       </body>
     </html>
   );
