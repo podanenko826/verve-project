@@ -13,6 +13,7 @@ const NavBar = () => {
   const navigation = [
     { label: 'Dashboard', href: '/', id: 0 },
     { label: 'Events', href: '/Events', id: 1 },
+    { label: 'Login', href: '/api/auth/signin', id: 2 },
   ];
   const currentPath = usePathname();
 
