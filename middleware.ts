@@ -1,8 +1,8 @@
 export { default } from 'next-auth/middleware';
 
 export const config = {
-    // *: zero or more
-    // +: one or more
-    // ?: zero or one
-    matcher: ['/api/events/:id*', '/Events']
-}
+  // *: zero or more
+  // +: one or more
+  // ?: zero or one
+  matcher: ['/Events'],
+};

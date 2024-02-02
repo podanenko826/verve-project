@@ -27,11 +27,13 @@ html {
 
 .dynamic-search {
   height: 30px;
+  width: 24rem;
   transition: 0.3s ease-out;
 }
 
 .dynamic-search:active {
   height: 10rem;
+  width: 20rem;
 }
 .custom-z-index {
   z-index: 500;
