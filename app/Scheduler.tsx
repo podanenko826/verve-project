@@ -24,6 +24,7 @@ interface Event {
 
 const ISheduller = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [id, setId] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -144,13 +145,31 @@ const ISheduller = () => {
           onEventDrop={handleUpdate}
         />
       )}
+      <div>
+        <button
+          className="w-32 m-5 h-10 bg-slate-400 hover:bg-slate-300 active:bg-slate-500 border-2"
+          onClick={refetchData}
+        >
+          Refresh data
+        </button>
 
-      <button
-        className="w-32 m-5 h-10 bg-slate-400 hover:bg-slate-300 active:bg-slate-500 border-2"
-        onClick={refetchData}
-      >
-        Refresh data
-      </button>
+        <label>
+          Enter ID:
+          <input
+            className="bg-slate-200 ml-3"
+            placeholder="event_id"
+            type="text"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+          />
+        </label>
+        <button
+          className="w-20 m-4 h-10 bg-slate-200 hover:bg-slate-300 active:bg-slate-400 border-2"
+          onClick={() => handleDelete(id)}
+        >
+          Delete
+        </button>
+      </div>
     </div>
   );
 };
