@@ -90,34 +90,6 @@ const ISheduller = () => {
     }
   }
 
-  const handleConfirm = async (event: ProcessedEvent, action: EventActions) => {
-    let returnedEvent: ProcessedEvent = {
-      ...event,
-    };
-
-    if (action === 'edit') {
-      returnedEvent = event;
-      await updateEventOnServer(returnedEvent);
-    }
-    if (action === 'create') {
-      await addEventOnServer(returnedEvent);
-    }
-
-    return returnedEvent;
-  };
-
-  const handleUpdate = async (updatedId: any) => {
-    await updateEventOnServer(updatedId);
-
-    return updatedId;
-  };
-
-  const handleDelete = async (deletedId: any) => {
-    await deleteEventOnServer(deletedId);
-
-    return deletedId;
-  };
-
   const refetchData = async () => {
     try {
       const response = await axios.get('/api/events');
@@ -125,6 +97,32 @@ const ISheduller = () => {
     } catch (error) {
       console.error('Error fetching event:', error);
     }
+  };
+
+  const handleConfirm = async (event: ProcessedEvent, action: EventActions) => {
+    let returnedEvent: ProcessedEvent = {
+      ...event,
+    };
+
+    if (action === 'edit') {
+      returnedEvent = event;
+      console.log(returnedEvent);
+      await addEventOnServer(returnedEvent);
+      await deleteEventOnServer(returnedEvent.event_id);
+    }
+    if (action === 'create') {
+      await addEventOnServer(returnedEvent);
+    }
+
+    refetchData();
+
+    return returnedEvent;
+  };
+
+  const handleDelete = async (deletedId: any) => {
+    await deleteEventOnServer(deletedId);
+
+    return deletedId;
   };
 
   return (
@@ -142,7 +140,7 @@ const ISheduller = () => {
           hourFormat="24"
           onConfirm={handleConfirm}
           onDelete={handleDelete}
-          onEventDrop={handleUpdate}
+          draggable={false}
         />
       )}
       <div>

@@ -11,7 +11,6 @@ const SideBar = () => {
   const navigation = [
     { label: 'Dashboard', href: '/', id: 0 },
     { label: 'Events', href: '/Events', id: 1 },
-    { label: 'Login', href: '/api/auth/signin', id: 2 },
   ];
 
   const currentPath = usePathname();
@@ -19,7 +18,7 @@ const SideBar = () => {
   const { status, data: session } = useSession();
 
   return (
-    <nav className="w-[170px] min-h-screen space-y-10 shadow-2xl z-50 transition-all hidden md:block duration-300">
+    <nav className="w-[170px] min-h-screen space-y-10 shadow-2xl z-50 transition-all hidden md:block duration-300 overflow-hidden">
       <Link className="flex text-3xl pt-7 pl-7" href="/">
         <AiFillCarryOut className="mt-0.5 pt-0.5" />
         <h1 className="font-light">Verve</h1>
@@ -54,7 +53,7 @@ const SideBar = () => {
             <div className="flex flex-col space-y-2 pt-10">
               <p className="font-semibold">{session.user?.name}</p>
               <Link
-                className="transition-all bg-white py-1 font-semibold rounded-lg shadow-lg hover:shadow-sm duration-200 active:shadow-lg"
+                className="transition-all bg-white px-5 py-1 font-semibold rounded-lg shadow-lg hover:shadow-sm duration-200 active:shadow-lg"
                 href="/api/auth/signout"
               >
                 Sign out
