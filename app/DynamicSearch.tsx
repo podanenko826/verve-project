@@ -13,7 +13,7 @@ const DynamicSearch = () => {
           id="search"
           name="search"
           placeholder=""
-          className="rounded-xl md:w-72 lg:w-96 pl-10 p-0.5 custom-z-index shadow-lg dynamic-search ease-in-out active:scale-y-105 hover:shadow-md transition-all active:shadow-lg duration-300 font-semibold outline-none active:border-2"
+          className="rounded-xl md:w-72 lg:w-96 pl-10 p-0.5 dark:bg-gray-800 custom-z-index shadow-lg dynamic-search ease-in-out active:scale-y-105 hover:shadow-md transition-all active:shadow-lg duration-300 font-semibold outline-none active:border-2"
         />
         {/* <button type="submit">Search</button> */}
       </form>
