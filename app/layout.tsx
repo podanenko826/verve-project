@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 
 import NavBar from './NavBar';
 import SideBar from './SideBar';
+import AuthProvider from './auth/Provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,13 +21,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-gradienn-radial flex w-screen`}>
-        <div>
-          <SideBar />
-        </div>
-        <div className="w-screen">
-          <NavBar />
-          {children}
-        </div>
+        <AuthProvider>
+          <div>
+            <SideBar />
+          </div>
+          <div className="w-screen">
+            <NavBar />
+            {children}
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );
