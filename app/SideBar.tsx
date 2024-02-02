@@ -16,12 +16,12 @@ const SideBar = () => {
   const currentPath = usePathname();
 
   return (
-    <nav className="w-[170px] min-h-screen space-y-10 bg-sidebar shadow-2xl z-50 transition-all hidden md:block duration-300">
+    <nav className="w-[170px] min-h-screen space-y-10 shadow-2xl z-50 transition-all hidden md:block duration-300">
       <Link className="flex text-3xl pt-7 pl-7" href="/">
         <AiFillCarryOut className="mt-0.5 pt-0.5" />
         <h1 className="font-light">Verve</h1>
       </Link>
-      <ul className="flex flex-col items-center text-center space-y-2">
+      <ul className="flex flex-col items-center text-center space-y-3">
         {navigation.map((item) => (
           <li key={item.id}>
             <Link
@@ -30,7 +30,7 @@ const SideBar = () => {
                 currentPath === item.href
                   ? 'text-black'
                   : 'text-zinc-500 hover:text-zinc-700'
-              } transition-all bg-white px-3 py-1 rounded-xl shadow-xl hover:shadow-sm duration-200 active:shadow-lg`}
+              } transition-all bg-white px-7 py-1 rounded-lg shadow-lg hover:shadow-sm duration-200 active:shadow-lg`}
             >
               {item.label}
             </Link>

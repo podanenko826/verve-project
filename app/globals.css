@@ -25,6 +25,21 @@ html {
     rgb(var(--background-start-rgb));
 }
 
+.dynamic-search {
+  height: 30px;
+  transition: 0.3s ease-out;
+}
+
+.dynamic-search:active {
+  height: 10rem;
+}
+.custom-z-index {
+  z-index: 500;
+}
+.custom-z-index-greater {
+  z-index: 600;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
