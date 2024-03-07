@@ -75,6 +75,10 @@ const ISheduller = () => {
   }
 
   async function deleteEventOnServer(deletedId: any) {
+    if (!deletedId) {
+      return console.error('Id is required to delete an event.');
+    }
+
     try {
       const response = await axios.delete(`/api/events/${deletedId}`);
 

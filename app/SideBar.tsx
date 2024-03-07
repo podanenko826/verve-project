@@ -40,12 +40,18 @@ const SideBar = () => {
         ))}
         <li>
           {status === 'unauthenticated' && (
-            <div className="pt-10">
+            <div className="pt-10 flex flex-col space-y-2">
               <Link
                 className="transition-all bg-white px-10 py-1 font-semibold rounded-lg shadow-lg hover:shadow-sm duration-200 active:shadow-lg"
                 href="/api/auth/signin"
               >
                 Sign in
+              </Link>
+              <Link
+                className="transition-all bg-white py-1 font-semibold rounded-lg shadow-lg hover:shadow-sm duration-200 active:shadow-lg"
+                href="/Register"
+              >
+                Sign up
               </Link>
             </div>
           )}
