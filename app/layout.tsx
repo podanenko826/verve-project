@@ -22,11 +22,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} bg-gradienn-radial flex w-screen`}>
         <AuthProvider>
-          <div>
+          {/* <div>
             <SideBar />
-          </div>
+          </div> */}
           <div className="w-screen">
-            <NavBar />
+            {/* <NavBar /> */}
             {children}
           </div>
         </AuthProvider>

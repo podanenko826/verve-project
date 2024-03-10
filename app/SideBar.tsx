@@ -9,8 +9,8 @@ import { useSession } from 'next-auth/react';
 
 const SideBar = () => {
   const navigation = [
-    { label: 'Dashboard', href: '/', id: 0 },
-    { label: 'Events', href: '/Events', id: 1 },
+    { label: 'Dashboard', href: '/dashboard', id: 0 },
+    { label: 'Events', href: '/events', id: 1 },
   ];
 
   const currentPath = usePathname();

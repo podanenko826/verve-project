@@ -1,9 +1,8 @@
 'use client';
 import SideBar from '../SideBar';
 import NavBar from '../NavBar';
-import Scheduler from '@/app/Scheduler';
 
-export default function EventsPage() {
+export default function DashboardPage() {
   return (
     <>
       <div className="flex w-screen">
@@ -12,7 +11,7 @@ export default function EventsPage() {
         </div>
         <div className="w-screen">
           <NavBar />
-          <Scheduler />
+          <p>Dashboard</p>
         </div>
       </div>
     </>
