@@ -1,11 +1,7 @@
 'use client';
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import {
-  DO_NOT_USE_OR_YOU_WILL_BE_FIRED_EXPERIMENTAL_REACT_NODES,
-  useEffect,
-  useState,
-} from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import SideBar from '@/app/SideBar';
@@ -15,6 +11,7 @@ import toDate from 'date-fns/toDate';
 import format from 'date-fns/format';
 import { uk } from 'date-fns/locale';
 import { enUS } from 'date-fns/locale';
+import { ProcessedEvent } from '@aldabil/react-scheduler/types';
 
 interface Props {
   params: { id: string };
@@ -54,6 +51,65 @@ const EventEditPage = ({ params: { id } }: Props) => {
     fetchEvent();
   }, []);
 
+  async function deleteEventOnServer(deletedId: number) {
+    if (!deletedId) {
+      return console.error('Id is required to delete an event.');
+    }
+
+    try {
+      const response = await axios.delete(`/api/events/${deletedId}`);
+
+      if (response.status === 200) {
+        return true; // Event deleted successfully
+      } else {
+        console.error('Unexpected response status:', response.status);
+        return false; // Unexpected response status
+      }
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      throw error; // Propagate the error or handle it as needed
+    }
+  }
+
+  async function archiveEventOnServer(
+    archivedId: number,
+    data: any
+  ): Promise<ProcessedEvent | undefined> {
+    if (!archivedId) {
+      console.error('Id is required to delete an event.');
+    }
+
+    if (data.status === Status.OPEN) {
+      setSelectedEvent({
+        ...data,
+        status: Status.CLOSED,
+      });
+    } else {
+      setSelectedEvent({
+        ...data,
+        status: Status.OPEN,
+      });
+    }
+
+    data = {
+      ...selectedEvent,
+    };
+
+    try {
+      const response = await axios.put(`/api/events/${archivedId}`, data);
+
+      if (response.status === 200) {
+        return response.data as ProcessedEvent; // Event archived successfully
+      } else {
+        console.error('Unexpected response status:', response.status);
+        return undefined; // Unexpected response status
+      }
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      throw error; // Propagate the error or handle it as needed
+    }
+  }
+
   // const startDate = selectedEvent?.start.toLocaleDateString('en-US', {
   //   year: 'numeric',
   //   month: 'long',
@@ -69,7 +125,7 @@ const EventEditPage = ({ params: { id } }: Props) => {
 
   if (selectedEvent && selectedEvent.start !== undefined) {
     const startDateTime = new Date(selectedEvent.start);
-    startDate = format(startDateTime, 'd MMMM yyyy ', {
+    startDate = format(startDateTime, 'd MMMM yyyy', {
       locale: enUS,
     });
     startTime = format(startDateTime, 'h:mm a', {
@@ -101,7 +157,7 @@ const EventEditPage = ({ params: { id } }: Props) => {
         </div>
         <div className="flex flex-col w-screen">
           <NavBar />
-          <h1 className="text-[50px] font-mono self-center">Edit event</h1>
+          <h1 className="text-[45px] font-mono self-center">Event details</h1>
           <div className="mt-10 ml-12">
             {selectedEvent ? (
               <>
@@ -109,9 +165,10 @@ const EventEditPage = ({ params: { id } }: Props) => {
                 <h1 className="mb-10">{selectedEvent?.title}</h1>
 
                 <p className="font-medium">Time Duration</p>
-                <h1 className="mb-3">
-                  From {startDate} to {endDate}
-                </h1>
+                {startDate === endDate
+                  ? startDate
+                  : 'From ' + startDate + ' to ' + endDate}
+                <h1 className="mb-3"></h1>
                 <h1 className="mb-10">
                   {startTime} - {endTime}
                 </h1>
@@ -127,6 +184,45 @@ const EventEditPage = ({ params: { id } }: Props) => {
                     ? 'Archived'
                     : 'In Progress'}
                 </h1>
+                <div className="space-x-5">
+                  <button
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                      deleteEventOnServer(selectedEvent.event_id)
+                    }
+                    className="px-2 h-10 bg-zinc-200 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                  >
+                    Rename
+                  </button>
+                  <button
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                      deleteEventOnServer(selectedEvent.event_id)
+                    }
+                    className="px-2 h-10 bg-zinc-200 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                  >
+                    Change time
+                  </button>
+                  <button
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                      deleteEventOnServer(selectedEvent.event_id)
+                    }
+                    className="px-2 h-10 bg-zinc-200 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                      archiveEventOnServer(
+                        selectedEvent.event_id,
+                        selectedEvent
+                      )
+                    }
+                    className="px-2 h-10 bg-zinc-200 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                  >
+                    {selectedEvent.status === Status.OPEN
+                      ? 'Archive'
+                      : 'Unarchive'}
+                  </button>
+                </div>
               </>
             ) : (
               <h1>Event {id} does not exist!</h1>

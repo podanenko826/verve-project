@@ -43,13 +43,13 @@ html {
     rgb(var(--background-start-rgb));
 }
 
-.dynamic-search {
+.dynamic-search-event-actions {
   height: 30px;
   width: 24rem;
   /* transition: 0.3s ease-out; */
   animation: dynamic 0.5s forwards;
 }
-.dynamic-search-reverse {
+.dynamic-search-event-actions-reverse {
   height: 30px;
   width: 24rem;
   animation: dynamicReverse 0.5s forwards;

@@ -57,15 +57,15 @@ export async function PUT(
       return NextResponse.json(validation.error.errors, { status: 400 });
     }
 
-    const eventId = parseInt(params.id);
+    // const eventId = parseInt(params.id);
 
     // Check if eventId is a valid integer
-    if (isNaN(eventId)) {
+    if (isNaN(parseInt(params.id))) {
       return NextResponse.json({ error: 'Invalid event ID' }, { status: 400 });
     }
 
     const event = await prisma.event.findUnique({
-      where: { event_id: eventId },
+      where: { event_id: parseInt(params.id) },
     });
 
     if (!event) {
@@ -74,7 +74,7 @@ export async function PUT(
 
     // Update the event with the new data from the request body
     const updatedEvent = await prisma.event.update({
-      where: { event_id: eventId },
+      where: { event_id: parseInt(params.id) },
       data: {
         title: body.title,
         start: body.start,
