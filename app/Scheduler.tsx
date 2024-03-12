@@ -58,21 +58,24 @@ const ISheduller = () => {
     }
   };
 
-  async function updateEventOnServer(updatedId: any) {
+  const updateEventOnServer = async (
+    updatedId: any,
+    data: any
+  ): Promise<ProcessedEvent | undefined> => {
     try {
-      const response = await axios.put(`/api/events/${updatedId}`);
+      const response = await axios.put(`/api/events/${updatedId}`, data);
 
       if (response.status === 200) {
-        return true;
+        return response.data as ProcessedEvent;
       } else {
         console.error('Unexpected response status:', response.status);
-        return false;
+        return undefined;
       }
     } catch (error) {
       console.error('Error updating event:', error);
       throw error;
     }
-  }
+  };
 
   async function deleteEventOnServer(deletedId: any) {
     if (!deletedId) {
@@ -110,9 +113,7 @@ const ISheduller = () => {
 
     if (action === 'edit') {
       returnedEvent = event;
-      console.log(returnedEvent);
-      await addEventOnServer(returnedEvent);
-      await deleteEventOnServer(returnedEvent.event_id);
+      await updateEventOnServer(returnedEvent.event_id, returnedEvent);
     }
     if (action === 'create') {
       await addEventOnServer(returnedEvent);
