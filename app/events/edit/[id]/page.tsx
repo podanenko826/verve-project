@@ -51,6 +51,33 @@ const EventEditPage = ({ params: { id } }: Props) => {
     fetchEvent();
   }, []);
 
+  useEffect(() => {
+    async function archiveEventOnServer(data: any) {
+      if (!data.event_id) {
+        console.error('Id is required to delete an event.');
+      }
+
+      const updatedData = {
+        ...data,
+        status: data.status === Status.OPEN ? Status.CLOSED : Status.OPEN,
+      };
+
+      try {
+        setSelectedEvent(updatedData);
+        console.log(updatedData);
+        const updatedEvent = await updateEventOnServer(
+          data.event_id,
+          selectedEvent
+        );
+        console.log('Updated event on server:', updatedEvent);
+      } catch (error) {
+        console.error('Error archiving event:', error);
+      }
+    }
+
+    // archiveEventOnServer(selectedEvent);
+  }, [selectedEvent]);
+
   async function deleteEventOnServer(deletedId: number) {
     if (!deletedId) {
       return console.error('Id is required to delete an event.');
@@ -70,55 +97,44 @@ const EventEditPage = ({ params: { id } }: Props) => {
       throw error; // Propagate the error or handle it as needed
     }
   }
-
-  async function archiveEventOnServer(
-    archivedId: number,
+  const updateEventOnServer = async (
+    updatedId: number,
     data: any
-  ): Promise<ProcessedEvent | undefined> {
-    if (!archivedId) {
-      console.error('Id is required to delete an event.');
-    }
-
-    if (data.status === Status.OPEN) {
-      setSelectedEvent({
-        ...data,
-        status: Status.CLOSED,
-      });
-    } else {
-      setSelectedEvent({
-        ...data,
-        status: Status.OPEN,
-      });
-    }
-
-    data = {
-      ...selectedEvent,
-    };
-
+  ): Promise<ProcessedEvent | undefined> => {
     try {
-      const response = await axios.put(`/api/events/${archivedId}`, data);
+      const response = await axios.put(`/api/events/${updatedId}`, data);
 
       if (response.status === 200) {
-        return response.data as ProcessedEvent; // Event archived successfully
+        return response.data as ProcessedEvent;
       } else {
         console.error('Unexpected response status:', response.status);
-        return undefined; // Unexpected response status
+        return undefined;
       }
     } catch (error) {
-      console.error('Error deleting event:', error);
-      throw error; // Propagate the error or handle it as needed
+      console.error('Error updating event:', error);
+      throw error;
     }
-  }
+  };
 
-  // const startDate = selectedEvent?.start.toLocaleDateString('en-US', {
-  //   year: 'numeric',
-  //   month: 'long',
-  //   day: 'numeric',
-  //   hour: 'numeric',
-  //   minute: 'numeric',
-  //   second: 'numeric',
-  //   timeZone: 'UTC', // Specify the timezone if needed
-  // });
+  // async function archiveEventOnServer(archivedId: number, data: any) {
+  //   if (!archivedId) {
+  //     console.error('Id is required to delete an event.');
+  //   }
+
+  //   const updatedData = {
+  //     ...data,
+  //     status: data.status === Status.OPEN ? Status.CLOSED : Status.OPEN,
+  //   };
+
+  //   try {
+  //     setSelectedEvent(updatedData);
+  //     console.log(updatedData);
+  //     const updatedEvent = await updateEventOnServer(archivedId, updatedData);
+  //     console.log('Updated event on server:', updatedEvent);
+  //   } catch (error) {
+  //     console.error('Error archiving event:', error);
+  //   }
+  // }
 
   let startDate,
     startTime: string | null = null;
@@ -148,7 +164,6 @@ const EventEditPage = ({ params: { id } }: Props) => {
     });
   }
 
-  console.log(selectedEvent);
   return (
     <>
       <div className="flex w-screen">
@@ -189,7 +204,7 @@ const EventEditPage = ({ params: { id } }: Props) => {
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                       deleteEventOnServer(selectedEvent.event_id)
                     }
-                    className="px-2 h-10 bg-zinc-200 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                    className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
                   >
                     Rename
                   </button>
@@ -197,7 +212,7 @@ const EventEditPage = ({ params: { id } }: Props) => {
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                       deleteEventOnServer(selectedEvent.event_id)
                     }
-                    className="px-2 h-10 bg-zinc-200 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                    className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
                   >
                     Change time
                   </button>
@@ -205,7 +220,7 @@ const EventEditPage = ({ params: { id } }: Props) => {
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                       deleteEventOnServer(selectedEvent.event_id)
                     }
-                    className="px-2 h-10 bg-zinc-200 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                    className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
                   >
                     Delete
                   </button>
@@ -216,7 +231,7 @@ const EventEditPage = ({ params: { id } }: Props) => {
                         selectedEvent
                       )
                     }
-                    className="px-2 h-10 bg-zinc-200 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                    className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
                   >
                     {selectedEvent.status === Status.OPEN
                       ? 'Archive'

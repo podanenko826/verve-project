@@ -75,24 +75,26 @@ const DynamicSearch = () => {
     if (input) setIsSearchBarEmpty(false);
     else setIsSearchBarEmpty(true);
 
-    try {
-      const response = await axios.get('/api/events');
-      setEvents(response.data);
+    if (input !== 'event') {
+      try {
+        const response = await axios.get('/api/events');
+        setEvents(response.data);
 
-      for (let i = 0; i < response.data.length; i++) {
-        let e = response.data[i];
+        for (let i = 0; i < response.data.length; i++) {
+          let e = response.data[i];
 
-        if (e.title === input) {
-          setSelectedEvent(e);
-          setEventTitle(e.title);
-          break;
-        } else {
-          setSelectedEvent(undefined);
-          setEventTitle('');
+          if (e.title === input) {
+            setSelectedEvent(e);
+            setEventTitle(e.title);
+            break;
+          } else {
+            setSelectedEvent(undefined);
+            setEventTitle('');
+          }
         }
+      } catch (error) {
+        return 'Error fetching event:' + error;
       }
-    } catch (error) {
-      return 'Error fetching event:' + error;
     }
   };
 
@@ -160,13 +162,13 @@ const DynamicSearch = () => {
             onChange={(e) => handleInput(e.target.value)}
             className={`${
               selectedEvent || data.toLowerCase() === 'event'
-                ? 'bg-white rounded-t-xl'
+                ? 'bg-white dark:bg-gray-800 rounded-t-xl'
                 : 'shadow-lg active:border-2 hover:shadow-md active:shadow-lg dark:bg-gray-800 rounded-xl'
-            } md:w-72 text-top max-w-96 pl-10 p-0.5 custom-z-index-great outline-none ease-in-out active:scale-y-105 transition-all duration-500 font-semibold`}
+            } w-40 md:w-72 text-top max-w-96 pl-10 p-0.5 custom-z-index-great outline-none ease-in-out active:scale-y-105 transition-all duration-500 font-semibold`}
           />
 
           <button
-            className={`custom-z-index-great ml-[10px] px-3 bg-slate-50 hover:bg-slate-100 hover:border active:bg-slate-200 dark:bg-gray-700 duration-500 transition-all rounded-lg shadow-lg hover:shadow-xl font-light text-slate-600 dark:text-slate-300`}
+            className={`custom-z-index-great ml-[10px] px-3 bg-slate-50 dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:border active:bg-slate-200 active:scale-x-105 dark:active:bg-slate-800 duration-500 transition-all rounded-lg shadow-lg hover:shadow-xl font-light text-slate-600 dark:text-slate-300`}
             type="submit"
           >
             Search
@@ -176,9 +178,9 @@ const DynamicSearch = () => {
         <div
           className={`${
             selectedEvent || data.toLowerCase() === 'event'
-              ? 'dynamic-search-event-action shadow-lg active:border-2 hover:shadow-md active:shadow-lg bg-white dark:bg-gray-800'
-              : 'dynamic-search-event-actions-revers bg-transparent'
-          } overflow-x-auto flex flex-col pt-[26px] justify-around items-center rounded-xl absolute w-80 max-h-[700px] md:w-72 text-top lg:w-96 p-0.5 custom-z-index ease-in-out active:scale-y-105 transition-all duration-500 font-semibold outline-none`}
+              ? 'shadow-lg md:active:border-2 hover:shadow-md active:shadow-lg bg-white dark:bg-gray-800'
+              : ' bg-transparent'
+          } overflow-x-auto flex flex-col pt-[26px] justify-around items-center rounded-xl absolute w-[245px] max-h-[330px] text-top md:w-96 p-0.5 custom-z-index ease-in-out transition-all duration-500 font-semibold outline-none`}
         >
           {/* Code to display searched event delete and modify buttons */}
 
@@ -230,7 +232,8 @@ const DynamicSearch = () => {
 
           {/* Code to display all events in a search bar */}
 
-          {data.toLowerCase() === 'event' ? (
+          {data.toLowerCase() === 'event' &&
+          selectedEvent?.title !== 'event' ? (
             <ul className="mt-[2px]">
               {events.map((item) => (
                 <li key={item.event_id}>
@@ -239,7 +242,7 @@ const DynamicSearch = () => {
                       handleEventChoose(e, item.event_id)
                     }
                     key={item.event_id}
-                    className="w-[315px] md:w-screen text-center hover:bg-slate-100 font-normal py-[6px] border-y border-zinc-100 duration-300 transition-all"
+                    className="w-[315px] md:w-screen overflow-scroll text-center hover:bg-slate-100 dark:hover:bg-gray-700 font-normal py-[6px] border-y border-zinc-100 dark:border-zinc-700 duration-300 transition-all"
                   >
                     {item.title}
                   </button>
