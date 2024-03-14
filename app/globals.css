@@ -81,4 +81,68 @@ html {
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
+  /* Styles for tool bar */
+  .css-1419abu-MuiPaper-root {
+    --tw-bg-opacity: 1;
+    background-color: rgb(17 24 39 / var(--tw-bg-opacity)) !important;
+  }
+  /* Styles for events shape */
+  .css-10d1a0h-MuiButtonBase-root {
+    --tw-bg-opacity: 1;
+    background-color: rgb(23 37 84 / var(--tw-bg-opacity)) !important;
+  }
+  /* Styles for the whole Scheduler background */
+  .rs__cell,
+  .rs__header,
+  .rs__today_cell {
+    --tw-bg-opacity: 1;
+    background-color: rgb(17 24 39 / var(--tw-bg-opacity)) !important;
+    border-color: rgb(30 41 59 / var(--tw-bg-opacity)) !important;
+  }
+
+  /* Styles for borders around Scheduler backgrounds */
+  .css-1gyej37,
+  .css-1d1h06e,
+  .css-l3bzu8,
+  .css-ncbr6b,
+  .css-s6u7kg,
+  .css-ess3ih {
+    --tw-bg-opacity: 1;
+    border-color: rgb(30 41 59 / var(--tw-bg-opacity)) !important;
+  }
+  /* Styles for numbers in calendar */
+  .css-1gqyz35-MuiTypography-root {
+    color: white;
+  }
+  /* Styles for Month / Week / Day buttons label and arrows around current date  */
+  .css-i4bv87-MuiSvgIcon-root,
+  .css-1y942vo-MuiButtonBase-root-MuiButton-root {
+    color: darkgrey;
+  }
+  /* Styles for box when event clicked (bottom one) */
+  .MuiBox-root,
+  .css-s22wio {
+    --tw-bg-opacity: 1;
+    background-color: rgb(30 58 138 / var(--tw-bg-opacity));
+  }
+
+  /* Styles for box when event clicked (lower one) */
+  .css-s22wio {
+    --tw-bg-opacity: 1;
+    background-color: rgb(23 37 84 / var(--tw-bg-opacity));
+  }
+
+  /* Styles for close button in a box when event clicked */
+
+  .css-1db085k-MuiSvgIcon-root {
+    color: darkgray;
+  }
+
+  /* Styles for an edit event box */
+
+  .css-12rl710-MuiPaper-root-MuiDialog-paper,
+  .css-m9glnp-MuiPaper-root-MuiDialog-paper {
+    background-color: darkgray;
+    border-radius: 30px;
+  }
 }

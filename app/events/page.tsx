@@ -6,11 +6,11 @@ import Scheduler from '@/app/Scheduler';
 export default function EventsPage() {
   return (
     <>
-      <div className="flex w-screen">
-        <div>
+      <div className="flex h-full">
+        <div className="hidden md:block h-full">
           <SideBar />
         </div>
-        <div className="w-screen">
+        <div className="w-full">
           <NavBar />
           <Scheduler />
         </div>
