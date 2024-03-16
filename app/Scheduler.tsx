@@ -131,7 +131,7 @@ const ISheduller = () => {
   };
 
   return (
-    <div className="max-h-min md:max-h-screen h-5/6 overflow-y-scroll">
+    <div className="max-h-min md:max-h-screen h-5/6 rounded-2xl mx-2 overflow-scroll">
       {events !== null && (
         <Scheduler
           view="day"
@@ -150,7 +150,7 @@ const ISheduller = () => {
           // draggable={false}
         />
       )}
-      <div className="flex items-center">
+      <div className="flex flex-col">
         <button
           className="w-32 m-5 h-10 bg-slate-400 hover:bg-slate-300 active:bg-slate-500 border-2 dark:border-0"
           onClick={refetchData}
@@ -158,22 +158,24 @@ const ISheduller = () => {
           Refresh data
         </button>
 
-        <label>
-          Enter ID:
-          <input
-            className="bg-slate-200 text-black ml-3 pl-2"
-            placeholder="event_id"
-            type="text"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
-          />
-        </label>
-        <button
-          className="w-20 m-4 h-10 bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 active:bg-slate-400 border-2 dark:border-0"
-          onClick={() => handleDelete(id)}
-        >
-          Delete
-        </button>
+        <div>
+          <label>
+            Enter ID:
+            <input
+              className="bg-slate-200 text-black ml-3 pl-2"
+              placeholder="event_id"
+              type="text"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+            />
+          </label>
+          <button
+            className="w-20 m-4 h-10 bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 active:bg-slate-400 border-2 dark:border-0"
+            onClick={() => handleDelete(id)}
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -25,8 +25,8 @@ const SideBar = () => {
   const { status, data: session } = useSession();
 
   return (
-    <nav className="flex flex-col items-center dark:bg-gradient-sidebar-dark justify-around pb-10 w-[30px] md:w-[150px] max-w-[170px] min-h-screen space-y-10 shadow-2xl z-50 transition-all duration-300 overflow-hidden">
-      <Link className="flex text-3xl" href="/">
+    <nav className="flex flex-col items-center bg-gradient-sidebar dark:bg-gradient-sidebar-dark justify-around pb-10 w-[120px] lg:w-[200px] min-h-screen space-y-10 shadow-2xl z-50 transition-all duration-300 overflow-hidden">
+      <Link className="flex text-3xl text-white" href="/">
         <AiFillCarryOut className="mt-0.5 pt-0.5" />
         <h1 className="font-light hidden md:block">Verve</h1>
       </Link>
@@ -50,7 +50,7 @@ const SideBar = () => {
               currentPath === '/dashboard'
                 ? 'text-gray-200'
                 : 'text-gray-400 hover:text-gray-200'
-            } transition-all flex items-center text-[19px] hover:shadow-sm duration-200 active:shadow-lg`}
+            } transition-all flex items-center text-[19px] duration-200`}
           >
             <RiDashboard2Line /> Dashboard
           </Link>
@@ -62,7 +62,7 @@ const SideBar = () => {
               currentPath === '/events'
                 ? 'text-gray-200'
                 : 'text-gray-400 hover:text-gray-200'
-            } transition-all flex items-center text-[19px] hover:shadow-sm duration-200 active:shadow-lg`}
+            } transition-all flex items-center text-[19px] duration-200`}
           >
             <RiCalendarEventLine /> Events
           </Link>
@@ -81,7 +81,7 @@ const SideBar = () => {
             </Link>
             <Link
               className="transition-all bg-white dark:text-black py-1 font-semibold rounded-lg shadow-lg hover:shadow-sm duration-200 active:shadow-lg"
-              href="/Register"
+              href="/register"
             >
               Sign up
             </Link>
@@ -89,7 +89,7 @@ const SideBar = () => {
         )}
         {status === 'authenticated' && (
           <div className="flex flex-col items-center space-y-2">
-            <p className="font-semibold text-[15px] overflow-hidden">
+            <p className="font-semibold text-[15px] text-white overflow-hidden">
               {session.user?.name}
             </p>
             <Link

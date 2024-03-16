@@ -82,7 +82,8 @@ html {
     --background-end-rgb: 0, 0, 0;
   }
   /* Styles for tool bar */
-  .css-1419abu-MuiPaper-root {
+  .css-1419abu-MuiPaper-root,
+  .css-1d8d7kz-MuiPaper-root {
     --tw-bg-opacity: 1;
     background-color: rgb(17 24 39 / var(--tw-bg-opacity)) !important;
   }
@@ -106,13 +107,20 @@ html {
   .css-l3bzu8,
   .css-ncbr6b,
   .css-s6u7kg,
-  .css-ess3ih {
+  .css-ess3ih,
+  .css-lap9uk,
+  .css-1m6kv8o {
     --tw-bg-opacity: 1;
     border-color: rgb(30 41 59 / var(--tw-bg-opacity)) !important;
   }
   /* Styles for numbers in calendar */
   .css-1gqyz35-MuiTypography-root {
     color: white;
+  }
+
+  /* Styles for secondary text */
+  .css-83ijpv-MuiTypography-root {
+    color: whitesmoke;
   }
   /* Styles for Month / Week / Day buttons label and arrows around current date  */
   .css-i4bv87-MuiSvgIcon-root,

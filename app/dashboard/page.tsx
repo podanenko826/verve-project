@@ -1,6 +1,7 @@
 'use client';
 import SideBar from '../SideBar';
 import NavBar from '../NavBar';
+import DashboardComponent from '../Dashboard';
 
 export default function DashboardPage() {
   return (
@@ -9,9 +10,9 @@ export default function DashboardPage() {
         <div className="hidden md:block h-full">
           <SideBar />
         </div>
-        <div className="w-full">
+        <div className="flex flex-col items-center w-full">
           <NavBar />
-          <p>Dashboard</p>
+          <DashboardComponent />
         </div>
       </div>
     </>
