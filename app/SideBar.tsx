@@ -9,16 +9,36 @@ import { FaFacebook, FaInstagramSquare } from 'react-icons/fa';
 import { MdKeyboardDoubleArrowRight } from 'react-icons/md';
 import { RiDashboard2Line } from 'react-icons/ri';
 import { RiCalendarEventLine } from 'react-icons/ri';
+import { IoSettingsOutline } from 'react-icons/io5';
+import { MdOutlineAccountCircle } from 'react-icons/md';
 
 const SideBar = () => {
-  // const navigation = [
-  //   {
-  //     label: <RiDashboard2Line />,
-  //     href: '/dashboard',
-  //     id: 0,
-  //   },
-  //   { label: <RiCalendarEventLine />, href: '/events', id: 1 },
-  // ];
+  const navigation = [
+    {
+      icon: <RiDashboard2Line />,
+      label: 'Dashboard',
+      href: '/dashboard',
+      id: 0,
+    },
+    {
+      icon: <RiCalendarEventLine />,
+      label: 'Events',
+      href: '/events',
+      id: 1,
+    },
+    {
+      icon: <IoSettingsOutline />,
+      label: 'Settings',
+      href: '/settings',
+      id: 1,
+    },
+    {
+      icon: <MdOutlineAccountCircle />,
+      label: 'Account',
+      href: '/account',
+      id: 1,
+    },
+  ];
 
   const currentPath = usePathname();
 
@@ -48,58 +68,23 @@ const SideBar = () => {
             <option value="option1">Personal</option>
             <option value="option2">Business</option>
           </select>
-          {/* <div>
-            {selectedOption === 'option1' && (
-              <button onClick={() => console.log('Option 1 clicked')}>
-                Option 1 Button
-              </button>
-            )}
-            {selectedOption === 'option2' && (
-              <button onClick={() => console.log('Option 2 clicked')}>
-                Option 2 Button
-              </button>
-            )}
-          </div> */}
         </div>
       </div>
       <ul className="flex md:flex-col border-y-[1.5px] border-gray-400 pt-10 pb-28 space-y-4 text-center">
-        {/* {navigation.map((item) => (
+        {navigation.map((item) => (
           <li key={item.id}>
             <Link
               href={item.href}
               className={`${
-                currentPath === item.href ? '' : ''
-              } transition-all text-gray-200 hover:text-gray-400 w-20 h-20 text-[20px] hover:shadow-sm duration-200 active:shadow-lg`}
+                currentPath === item.href
+                  ? 'text-gray-200 bg-blue-400 rounded-lg'
+                  : 'text-gray-400 hover:text-gray-200'
+              } transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-[19px] duration-200`}
             >
-              {item.label}
+              {item.icon} {item.label}
             </Link>
           </li>
-        ))} */}
-        <li>
-          <Link
-            href="/dashboard"
-            className={`${
-              currentPath === '/dashboard'
-                ? 'text-gray-200 bg-blue-400 rounded-lg'
-                : 'text-gray-400 hover:text-gray-200'
-            } transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-[19px] duration-200`}
-          >
-            <RiDashboard2Line /> Dashboard
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/events"
-            className={`${
-              currentPath === '/events'
-                ? 'text-gray-200 bg-blue-400 rounded-lg'
-                : 'text-gray-400 hover:text-gray-200'
-            } transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-start text-[19px] duration-200`}
-          >
-            <RiCalendarEventLine /> Events
-          </Link>
-        </li>
-        <li></li>
+        ))}
       </ul>
 
       {/* <ul className="flex md:flex-col justify-center items-center text-center">
