@@ -20,9 +20,9 @@ const DashboardComponent = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center w-full h-5/6 px-16 overflow-y-scroll">
-        <div className="flex w-full justify-center">
-          <div className="flex flex-col w-1/3 m-5 p-6 justify-center space-y-3 rounded-[25px] border bg-white">
+      <div className="flex flex-col items-center w-full space-y-6 h-5/6 px-16 overflow-y-scroll">
+        <div className="flex w-full justify-center space-x-6">
+          <div className="flex flex-col w-1/3 p-6 justify-center space-y-3 rounded-[25px] border bg-white">
             <h2 className="text-slate-500 text-[14px] font-normal uppercase">
               Total events
             </h2>
@@ -32,7 +32,7 @@ const DashboardComponent = () => {
             </h2>
           </div>
 
-          <div className="flex flex-col w-1/3 h-48 m-5 p-6 justify-center space-y-3 rounded-[25px] border bg-white">
+          <div className="flex flex-col w-1/3 h-48 p-6 justify-center space-y-3 rounded-[25px] border bg-white">
             <h2 className="text-slate-500 text-[14px] font-normal uppercase">
               Completed events
             </h2>
@@ -40,7 +40,7 @@ const DashboardComponent = () => {
             <h2 className="text-green-600">↑ +0 since last month</h2>
           </div>
 
-          <div className="flex flex-col w-1/3 h-48 m-5 p-6 justify-center space-y-3 rounded-[25px] border bg-white">
+          <div className="flex flex-col w-1/3 h-48 p-6 justify-center space-y-3 rounded-[25px] border bg-white">
             <h2 className="text-slate-500 text-[14px] font-normal uppercase">
               Total revenue
             </h2>
@@ -49,14 +49,14 @@ const DashboardComponent = () => {
           </div>
         </div>
 
-        <div className="flex w-full h-[300px] justify-center">
-          <div className="flex flex-col w-full m-5 p-6 space-y-3 rounded-[25px] border bg-white">
+        <div className="flex w-full h-[300px] space-x-6 justify-center">
+          <div className="flex flex-col w-full p-6 space-y-3 rounded-[25px] border bg-white">
             <h2 className="text-slate-500 text-[14px] font-normal uppercase">
               Upcoming events
             </h2>
           </div>
 
-          <div className="flex flex-col w-1/2 m-5 p-6 justify-center space-y-3 rounded-[25px] border bg-white">
+          <div className="flex flex-col w-1/2 p-6 justify-center space-y-3 rounded-[25px] border bg-white">
             <h2 className="text-slate-500 text-[14px] font-normal uppercase">
               Total revenue
             </h2>

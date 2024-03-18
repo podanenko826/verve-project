@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { AiFillCarryOut } from 'react-icons/ai';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -24,13 +24,45 @@ const SideBar = () => {
 
   const { status, data: session } = useSession();
 
+  const [selectedOption, setSelectedOption] = useState('option1');
+
+  const handleOptionChange = (event: any) => {
+    setSelectedOption(event.target.value);
+  };
+
   return (
-    <nav className="flex flex-col items-center bg-gradient-sidebar dark:bg-gradient-sidebar-dark justify-around pb-10 w-[120px] lg:w-[200px] min-h-screen space-y-10 shadow-2xl z-50 transition-all duration-300 overflow-hidden">
-      <Link className="flex text-3xl text-white" href="/">
-        <AiFillCarryOut className="mt-0.5 pt-0.5" />
-        <h1 className="font-light hidden md:block">Verve</h1>
-      </Link>
-      <ul className="flex md:flex-col justify-center space-y-4 items-center text-center">
+    <nav className="flex flex-col bg-gradient-sidebar dark:bg-gradient-sidebar-dark pb-10 w-[120px] lg:w-[250px] min-h-screen space-y-10 shadow-2xl z-50 transition-all duration-300 overflow-hidden">
+      <div className="space-y-5 pt-7 flex flex-col items-center justify-between">
+        <Link className="flex text-3xl pr-20 text-white" href="/">
+          <AiFillCarryOut className="mt-0.5 pt-0.5" />
+          <h1 className="font-light hidden md:block">Verve</h1>
+        </Link>
+
+        <div className="w-5/6 rounded-2xl border border-zinc-400">
+          <h3 className="pl-3 py-0.5 text-zinc-300 text-[15px]">Workspace</h3>
+          <select
+            className="w-[200px] text-white bg-transparent outline-none pl-2 pb-1"
+            value={selectedOption}
+            onChange={handleOptionChange}
+          >
+            <option value="option1">Personal</option>
+            <option value="option2">Business</option>
+          </select>
+          {/* <div>
+            {selectedOption === 'option1' && (
+              <button onClick={() => console.log('Option 1 clicked')}>
+                Option 1 Button
+              </button>
+            )}
+            {selectedOption === 'option2' && (
+              <button onClick={() => console.log('Option 2 clicked')}>
+                Option 2 Button
+              </button>
+            )}
+          </div> */}
+        </div>
+      </div>
+      <ul className="flex md:flex-col border-y-[1.5px] border-gray-400 pt-10 pb-28 space-y-4 text-center">
         {/* {navigation.map((item) => (
           <li key={item.id}>
             <Link
@@ -48,9 +80,9 @@ const SideBar = () => {
             href="/dashboard"
             className={`${
               currentPath === '/dashboard'
-                ? 'text-gray-200'
+                ? 'text-gray-200 bg-blue-400 rounded-lg'
                 : 'text-gray-400 hover:text-gray-200'
-            } transition-all flex items-center text-[19px] duration-200`}
+            } transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-[19px] duration-200`}
           >
             <RiDashboard2Line /> Dashboard
           </Link>
@@ -60,9 +92,9 @@ const SideBar = () => {
             href="/events"
             className={`${
               currentPath === '/events'
-                ? 'text-gray-200'
+                ? 'text-gray-200 bg-blue-400 rounded-lg'
                 : 'text-gray-400 hover:text-gray-200'
-            } transition-all flex items-center text-[19px] duration-200`}
+            } transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-start text-[19px] duration-200`}
           >
             <RiCalendarEventLine /> Events
           </Link>
@@ -70,7 +102,7 @@ const SideBar = () => {
         <li></li>
       </ul>
 
-      <ul className="flex md:flex-col justify-center items-center text-center">
+      {/* <ul className="flex md:flex-col justify-center items-center text-center">
         {status === 'unauthenticated' && (
           <div className=" flex flex-col space-y-2">
             <Link
@@ -100,7 +132,7 @@ const SideBar = () => {
             </Link>
           </div>
         )}
-      </ul>
+      </ul> */}
       {/* <ul className="flex text-3xl justify-center w-40 space-x-2 ">
         <li>
           <Link href="#">
