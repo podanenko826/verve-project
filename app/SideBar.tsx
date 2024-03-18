@@ -30,13 +30,13 @@ const SideBar = () => {
       icon: <IoSettingsOutline />,
       label: 'Settings',
       href: '/settings',
-      id: 1,
+      id: 2,
     },
     {
       icon: <MdOutlineAccountCircle />,
       label: 'Account',
       href: '/account',
-      id: 1,
+      id: 3,
     },
   ];
 
@@ -51,7 +51,7 @@ const SideBar = () => {
   };
 
   return (
-    <nav className="flex flex-col bg-gradient-sidebar dark:bg-gradient-sidebar-dark pb-10 w-[120px] lg:w-[250px] min-h-screen space-y-10 shadow-2xl z-50 transition-all duration-300 overflow-hidden">
+    <nav className="flex flex-col bg-gradient-sidebar dark:bg-gradient-sidebar-dark pb-10 w-[250px] min-h-screen space-y-10 shadow-2xl z-50 transition-all duration-300 overflow-hidden">
       <div className="space-y-5 pt-7 flex flex-col items-center justify-between">
         <Link className="flex text-3xl pr-20 text-white" href="/">
           <AiFillCarryOut className="mt-0.5 pt-0.5" />
@@ -70,7 +70,7 @@ const SideBar = () => {
           </select>
         </div>
       </div>
-      <ul className="flex md:flex-col border-y-[1.5px] border-gray-400 pt-10 pb-28 space-y-4 text-center">
+      <ul className="flex md:flex-col border-t-[1.5px] border-gray-400 pt-10 pb-28 space-y-4 text-center">
         {navigation.map((item) => (
           <li key={item.id}>
             <Link
@@ -79,9 +79,10 @@ const SideBar = () => {
                 currentPath === item.href
                   ? 'text-gray-200 bg-blue-400 rounded-lg'
                   : 'text-gray-400 hover:text-gray-200'
-              } transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-[19px] duration-200`}
+              } transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-[16px] duration-200`}
             >
-              {item.icon} {item.label}
+              <strong className="pr-1.5">{item.icon}</strong>
+              {item.label}
             </Link>
           </li>
         ))}

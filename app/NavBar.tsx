@@ -1,16 +1,86 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import DynamicSearch from './DynamicSearch';
 
 import { IoMenu } from 'react-icons/io5';
+import { FaUserCircle } from 'react-icons/fa';
+import { IoSettingsOutline } from 'react-icons/io5';
+import { MdOutlineAccountCircle } from 'react-icons/md';
+import { GoSignOut } from 'react-icons/go';
 
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 const NavBar = () => {
+  const session = useSession();
+
+  const [userMenuOpened, setUserMenuOpened] = useState(false);
+
+  const navigation = [
+    {
+      icon: <IoSettingsOutline />,
+      label: 'Settings',
+      href: '/settings',
+      id: 0,
+    },
+    {
+      icon: <MdOutlineAccountCircle />,
+      label: 'Account',
+      href: '/account',
+      id: 1,
+    },
+    {
+      icon: <GoSignOut />,
+      label: 'Sign out',
+      href: '/api/auth/signout',
+      id: 2,
+    },
+  ];
+
+  const handleUserClicked = (event: any) => {
+    userMenuOpened ? setUserMenuOpened(false) : setUserMenuOpened(true);
+  };
+
   return (
     <>
-      <nav className="flex dark:bg-gray-950 justify-center min-w-full h-20">
-        <DynamicSearch />
+      <nav className="flex dark:bg-gray-950 justify-between border-b-[1.5px] border-zinc-200 dark:border-zinc-900 mb-10 min-w-full h-20">
+        <div className="w-full ml-5 flex justify-end">
+          <DynamicSearch />
+        </div>
+
+        <div className="w-3/5 h-full text-[30px] mr-7 flex justify-end items-center">
+          <button onClick={handleUserClicked}>
+            <FaUserCircle />
+          </button>
+          {session.status === 'authenticated' && userMenuOpened ? (
+            <div className="py-4 space-y-4 custom-z-index-greatest rounded-xl shadow-lg mt-80 bg-white dark:bg-slate-800 absolute">
+              <p className="text-[16px] pl-6 pr-16 font-medium">
+                {session.data?.user?.name}
+              </p>
+              <p className="text-[15px] text-slate-500 pl-6 pr-16 font-normal">
+                {session.data?.user?.email}
+              </p>
+              <div className="w-full text-[15px] border-t-[2px]">
+                <ul className="flex md:flex-col border-t-[0.5px] border-gray-100 dark:border-gray-950 pt-3 space-y-4 text-center">
+                  {navigation.map((item) => (
+                    <li key={item.id}>
+                      <Link
+                        href={item.href}
+                        className="text-gray-500 hover:bg-zinc-100 dark:hover:bg-gray-700 active:bg-zinc-200 dark:active:bg-gray-400 rounded-lg transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-[16px] duration-300"
+                      >
+                        <strong className="pr-1.5">{item.icon}</strong>
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ) : (
+            ''
+          )}
+        </div>
       </nav>
     </>
   );
