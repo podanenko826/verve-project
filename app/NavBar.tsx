@@ -49,20 +49,38 @@ const NavBar = () => {
           <DynamicSearch />
         </div>
 
-        <div className="w-3/5 h-full text-[30px] mr-7 flex justify-end items-center">
-          <button onClick={handleUserClicked}>
+        <div className="w-1/2 md:w-3/5 h-full text-[30px] mr-0 md:mr-7 flex justify-end items-start md:items-cente">
+          <button
+            className="mr-7 md:mr-0 h-full custom-z-index-greatest justify-self-center"
+            onClick={handleUserClicked}
+          >
             <FaUserCircle />
           </button>
+
+          {/* User context menu */}
+
           {session.status === 'authenticated' && userMenuOpened ? (
-            <div className="py-4 space-y-4 custom-z-index-greatest rounded-xl shadow-lg mt-80 bg-white dark:bg-slate-800 absolute">
-              <p className="text-[16px] pl-6 pr-16 font-medium">
-                {session.data?.user?.name}
-              </p>
-              <p className="text-[15px] text-slate-500 pl-6 pr-16 font-normal">
-                {session.data?.user?.email}
-              </p>
+            <div className="py-4 space-y-4 w-screen h-full md:w-auto md:h-auto custom-z-index-greatest rounded-none md:rounded-xl shadow-lg mt-0 md:mt-20 bg-slate-50 dark:bg-slate-800 fixed">
+              <div className="flex justify-between">
+                <div>
+                  <p className="text-[16px] pl-6 pr-16 font-medium">
+                    {session.data?.user?.name}
+                  </p>
+                  <p className="text-[15px] text-slate-500 pl-6 pr-16 font-normal">
+                    {session.data?.user?.email}
+                  </p>
+                </div>
+                <div className="block md:hidden">
+                  <button
+                    className="mr-6 text-2xl px-2 p-1 rounded-xl hover:bg-slate-200 active:bg-slate-400 dark:hover:bg-slate-600 dark:active:bg-slate-400"
+                    onClick={handleUserClicked}
+                  >
+                    ╳
+                  </button>
+                </div>
+              </div>
               <div className="w-full text-[15px] border-t-[2px]">
-                <ul className="flex md:flex-col border-t-[0.5px] border-gray-100 dark:border-gray-950 pt-3 space-y-4 text-center">
+                <ul className="flex flex-col border-t-[0.5px] border-gray-100 dark:border-gray-950 pt-8 md:pt-5 space-y-4 text-center">
                   {navigation.map((item) => (
                     <li key={item.id}>
                       <Link
