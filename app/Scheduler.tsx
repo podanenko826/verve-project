@@ -1,10 +1,13 @@
+'use client';
 import { Scheduler } from '@aldabil/react-scheduler';
 import { PrismaClient } from '@prisma/client';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { EventActions, ProcessedEvent } from '@aldabil/react-scheduler/types';
+import { useSearchParams } from 'next/navigation';
 
 import React from 'react';
+import { useRouter } from 'next/router';
 
 const prisma = new PrismaClient();
 
@@ -24,7 +27,33 @@ interface Event {
 
 const ISheduller = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<Event>();
+  const [eventStart, setEventStart] = useState<Date>();
+  // let startDateTime: Date | undefined = new Date();
   const [id, setId] = useState('');
+
+  // // console.log(event_id);
+
+  const searchParams = useSearchParams();
+
+  const search = searchParams.get('event_id');
+
+  useEffect(() => {
+    const findEvent = async () => {
+      if (search) {
+        try {
+          const response = await axios.get(`/api/events/${parseInt(search)}`);
+          // setSelectedEvent(response.data);
+          // searchedEvent = new Date(response.data.start);
+          setEventStart(new Date(response.data.start));
+        } catch (error) {
+          console.error('Error fetching event:', error);
+        }
+      }
+    };
+
+    findEvent();
+  }, [search]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -132,7 +161,7 @@ const ISheduller = () => {
 
   return (
     <div className="max-h-min md:max-h-screen h-5/6 rounded-2xl mx-0 lg:mx-2 overflow-y-scroll">
-      {events !== null && (
+      {events !== null && !search && !eventStart && (
         <Scheduler
           view="day"
           events={events.map((mappedEvent) => ({
@@ -147,6 +176,27 @@ const ISheduller = () => {
           onDelete={handleDelete}
           // onEventDrop={handleConfirm}
           onSelectedDateChange={refetchData}
+          // selectedDate={eventStart}
+          // draggable={false}
+        />
+      )}
+
+      {events !== null && search && eventStart && (
+        <Scheduler
+          view="day"
+          events={events.map((mappedEvent) => ({
+            event_id: mappedEvent.event_id,
+            title: mappedEvent.title,
+            start: new Date(mappedEvent.start),
+            end: new Date(mappedEvent.end),
+          }))}
+          // locale={uk}
+          hourFormat="24"
+          onConfirm={handleConfirm}
+          onDelete={handleDelete}
+          // onEventDrop={handleConfirm}
+          onSelectedDateChange={refetchData}
+          selectedDate={eventStart}
           // draggable={false}
         />
       )}
