@@ -7,6 +7,9 @@ import { enUS } from 'date-fns/locale';
 import { format } from 'date-fns';
 import Link from 'next/link';
 
+import { ImCross } from 'react-icons/im';
+import { PiWarningOctagonFill } from 'react-icons/pi';
+
 enum Status {
   OPEN = 'OPEN',
   IN_PROGRESS = 'IN_PROGRESS',
@@ -27,6 +30,7 @@ const DynamicSearch = () => {
   const [eventTitle, setEventTitle] = useState('');
   const [isSearchBarEmpty, setIsSearchBarEmpty] = useState(true);
   const [events, setEvents] = useState<Event[]>([]);
+  const [eventSearchFailed, setEventSearchFailed] = useState(false);
 
   const router = useRouter();
 
@@ -75,7 +79,7 @@ const DynamicSearch = () => {
     if (input) setIsSearchBarEmpty(false);
     else setIsSearchBarEmpty(true);
 
-    if (input !== 'event') {
+    if (input.toLowerCase() !== 'event') {
       try {
         const response = await axios.get('/api/events');
         setEvents(response.data);
@@ -147,44 +151,77 @@ const DynamicSearch = () => {
     });
   }
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    let searchedEvent;
+
+    if (data) {
+      for (const event of events) {
+        if (data === event.title) {
+          window.location.href = `/events?event_id=${event.event_id}`;
+          return;
+        }
+      }
+    }
+
+    setEventSearchFailed(true);
+    setTimeout(() => {
+      setEventSearchFailed(false);
+    }, 4500);
+  };
+
   return (
     <div>
-      <form className="flex z-50 mt-6">
+      <form
+        onSubmit={handleSubmit}
+        className={`${
+          eventSearchFailed ? 'mr-[250px] md:mr-[375px]' : ''
+        } flex z-50 mt-6`}
+      >
         <div className="flex">
-          <label htmlFor="search">
+          <label
+            htmlFor="search"
+            className={`${eventSearchFailed ? 'hidden' : ''}`}
+          >
             <IoMdSearch className="text-3xl fill-slate-400 absolute pl-2 custom-z-index-greater" />
           </label>
-          <input
-            type="search"
-            id="search"
-            name="search"
-            value={data}
-            onChange={(e) => handleInput(e.target.value)}
-            className={`${
-              selectedEvent || data.toLowerCase() === 'event'
-                ? 'bg-white dark:bg-gray-800 rounded-t-xl'
-                : 'shadow-lg active:border-2 hover:shadow-md active:shadow-lg dark:bg-gray-800 rounded-xl'
-            } w-40 md:w-72 text-top max-w-96 pl-10 p-0.5 custom-z-index-great outline-none ease-in-out active:scale-y-105 transition-all duration-500 font-semibold`}
-          />
-
-          <button
-            className={`custom-z-index-great ml-[10px] px-3 bg-slate-50 dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:border active:bg-slate-200 active:scale-x-105 dark:active:bg-slate-800 duration-500 transition-all rounded-lg shadow-lg hover:shadow-xl font-light text-slate-600 dark:text-slate-300`}
-            type="submit"
-          >
-            Search
-          </button>
+          {!eventSearchFailed && (
+            <input
+              type="search"
+              id="search"
+              name="search"
+              value={data}
+              onChange={(e) => handleInput(e.target.value)}
+              className={`${
+                selectedEvent ||
+                data.toLowerCase() === 'event' ||
+                eventSearchFailed
+                  ? 'bg-white dark:bg-gray-800 rounded-t-xl'
+                  : 'shadow-lg active:border-2 hover:shadow-md active:shadow-lg dark:bg-gray-800 rounded-xl'
+              } w-40 md:w-72 text-top max-w-96 pl-10 p-0.5 custom-z-index-great outline-none ease-in-out active:scale-y-105 transition-all duration-500 font-semibold`}
+            />
+          )}
+          {!eventSearchFailed && (
+            <button
+              className={`custom-z-index-great ml-[10px] px-3 bg-slate-50 dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:border active:bg-slate-200 active:scale-x-105 dark:active:bg-slate-800 duration-500 transition-all rounded-lg shadow-lg hover:shadow-xl font-light text-slate-600 dark:text-slate-300`}
+              type="submit"
+            >
+              Search
+            </button>
+          )}
         </div>
 
         <div
           className={`${
-            selectedEvent || data.toLowerCase() === 'event'
+            selectedEvent || data.toLowerCase() === 'event' || eventSearchFailed
               ? 'shadow-lg md:active:border-2 hover:shadow-md active:shadow-lg bg-white dark:bg-gray-800'
               : ' bg-transparent'
-          } overflow-x-auto flex flex-col pt-[26px] justify-around items-center rounded-xl absolute w-[245px] max-h-[330px] text-top md:w-96 p-0.5 custom-z-index ease-in-out transition-all duration-500 font-semibold outline-none`}
+          } ${eventSearchFailed ? '' : 'pt-[26px]'}
+          overflow-x-auto flex flex-col justify-around items-center rounded-xl absolute w-[245px] max-h-[330px] text-top md:w-96 p-0.5 custom-z-index ease-in-out transition-all duration-500 font-semibold outline-none`}
         >
           {/* Code to display searched event delete and modify buttons */}
 
-          {selectedEvent ? (
+          {selectedEvent && !eventSearchFailed ? (
             <>
               <div className="flex flex-col items-center w-full">
                 <p className="font-mono">{selectedEvent ? eventTitle : ''}</p>
@@ -233,7 +270,8 @@ const DynamicSearch = () => {
           {/* Code to display all events in a search bar */}
 
           {data.toLowerCase() === 'event' &&
-          selectedEvent?.title !== 'event' ? (
+          selectedEvent?.title !== 'event' &&
+          !eventSearchFailed ? (
             <ul className="mt-[2px]">
               {events.map((item) => (
                 <li key={item.event_id}>
@@ -251,6 +289,24 @@ const DynamicSearch = () => {
             </ul>
           ) : (
             ''
+          )}
+
+          {/* Code to display various errors in a search bar */}
+
+          {eventSearchFailed && (
+            <div className="flex space-x-5 py-[22px] transition-all">
+              {data ? (
+                <>
+                  <ImCross className="text-red-600 text-xl" />
+                  <h1 className="font-medium">Event does not exist</h1>
+                </>
+              ) : (
+                <>
+                  <PiWarningOctagonFill className="text-yellow-500 text-2xl" />
+                  <h1 className="font-medium">Event name is required</h1>
+                </>
+              )}
+            </div>
           )}
         </div>
       </form>

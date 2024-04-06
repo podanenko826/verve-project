@@ -77,9 +77,9 @@ const SideBar = () => {
               href={item.href}
               className={`${
                 currentPath === item.href
-                  ? 'text-gray-200 bg-blue-400 rounded-lg'
+                  ? 'text-gray-200 bg-blue-400'
                   : 'text-gray-400 hover:text-gray-200'
-              } transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-[16px] duration-200`}
+              } active:bg-blue-400 rounded-lg transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-[16px] duration-200`}
             >
               <strong className="pr-1.5">{item.icon}</strong>
               {item.label}

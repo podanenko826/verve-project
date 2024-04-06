@@ -12,12 +12,15 @@ import { RiCalendarEventLine } from 'react-icons/ri';
 
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 const NavBar = () => {
   const session = useSession();
 
   const [userMenuOpened, setUserMenuOpened] = useState(false);
+
+  const currentPath = usePathname();
 
   const navigation = [
     {
@@ -117,17 +120,21 @@ const NavBar = () => {
               </div>
               <div className="w-full text-[15px] border-t-[2px]">
                 <ul className="hidden md:flex flex-col border-t-[0.5px] border-gray-100 dark:border-gray-950 pt-8 md:pt-5 space-y-4 text-center">
-                  {navigation.map((item) => (
-                    <li key={item.id}>
-                      <Link
-                        href={item.href}
-                        className="text-gray-500 hover:bg-zinc-100 dark:hover:bg-gray-700 active:bg-zinc-200 dark:active:bg-gray-400 rounded-lg transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-[16px] duration-300"
-                      >
-                        <strong className="pr-1.5">{item.icon}</strong>
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {navigation.map((item) =>
+                    item.href !== currentPath ? (
+                      <li key={item.id}>
+                        <Link
+                          href={item.href}
+                          className="text-gray-500 hover:bg-zinc-100 dark:hover:bg-gray-700 active:bg-zinc-200 dark:active:bg-gray-400 rounded-lg transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-[16px] duration-300"
+                        >
+                          <strong className="pr-1.5">{item.icon}</strong>
+                          {item.label}
+                        </Link>
+                      </li>
+                    ) : (
+                      ''
+                    )
+                  )}
                 </ul>
                 <ul className="flex md:hidden flex-col border-t-[0.5px] border-gray-100 dark:border-gray-950 pt-8 md:pt-5 space-y-4 text-center">
                   {mobileNavigation.map((item) => (
