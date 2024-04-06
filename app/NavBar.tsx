@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import DynamicSearch from './DynamicSearch';
 
 import { IoMenu } from 'react-icons/io5';
@@ -18,7 +18,35 @@ import Link from 'next/link';
 const NavBar = () => {
   const session = useSession();
 
-  const [userMenuOpened, setUserMenuOpened] = useState(false);
+  const [userMenuOpened, setUserMenuOpened] = useState<boolean>(false);
+
+  const contextMenuRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      // Check if the click occurred outside of the context menu
+      if (
+        !target.closest('.context-menu') &&
+        !target.closest('.context-menu-button')
+      ) {
+        setUserMenuOpened(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+  const handleContextMenuClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    setUserMenuOpened(!userMenuOpened);
+  };
 
   const currentPath = usePathname();
 
@@ -76,10 +104,6 @@ const NavBar = () => {
     },
   ];
 
-  const handleUserClicked = (event: any) => {
-    userMenuOpened ? setUserMenuOpened(false) : setUserMenuOpened(true);
-  };
-
   return (
     <>
       <nav className="flex dark:bg-gray-950 justify-between border-b-[1.5px] border-zinc-200 dark:border-zinc-900 mb-10 min-w-full h-20">
@@ -89,8 +113,9 @@ const NavBar = () => {
 
         <div className="w-1/2 md:w-3/5 h-full text-[30px] mr-0 md:mr-7 flex justify-end items-start md:items-cente">
           <button
-            className="mr-7 md:mr-0 h-1/2 mt-5 px-1 rounded-lg custom-z-index-greatest justify-self-center hover:bg-slate-200 active:bg-slate-400 dark:hover:bg-slate-600 dark:active:bg-slate-400"
-            onClick={handleUserClicked}
+            className="context-menu-button mr-7 md:mr-0 h-1/2 mt-5 px-1 rounded-lg custom-z-index-greatest justify-self-center hover:bg-slate-200 active:bg-slate-400 dark:hover:bg-slate-600 dark:active:bg-slate-400"
+            onClick={handleContextMenuClick}
+            ref={contextMenuRef}
           >
             <FaUserCircle className="hidden md:block" />
             <IoMenu className="block md:hidden" />
@@ -99,7 +124,7 @@ const NavBar = () => {
           {/* User context menu */}
 
           {session.status === 'authenticated' && userMenuOpened ? (
-            <div className="py-4 space-y-4 w-full h-full overflow-scroll md:w-auto md:h-auto custom-z-index-greatest rounded-none md:rounded-xl shadow-lg mt-0 md:mt-20 bg-slate-50 dark:bg-slate-800 fixed">
+            <div className="context-menu py-4 space-y-4 w-full h-full overflow-scroll md:w-auto md:h-auto custom-z-index-greatest rounded-none md:rounded-xl shadow-lg mt-0 md:mt-20 bg-slate-50 dark:bg-slate-800 fixed">
               <div className="flex justify-between">
                 <div>
                   <p className="text-[16px] pl-6 pr-16 font-medium">
@@ -112,7 +137,7 @@ const NavBar = () => {
                 <div className="block md:hidden">
                   <button
                     className="mr-6 text-2xl px-2 p-1 rounded-xl hover:bg-slate-200 active:bg-slate-400 dark:hover:bg-slate-600 dark:active:bg-slate-400"
-                    onClick={handleUserClicked}
+                    onClick={handleContextMenuClick}
                   >
                     ╳
                   </button>
