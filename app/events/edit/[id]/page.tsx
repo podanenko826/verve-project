@@ -51,32 +51,48 @@ const EventEditPage = ({ params: { id } }: Props) => {
     fetchEvent();
   }, []);
 
-  useEffect(() => {
-    async function archiveEventOnServer(data: any) {
-      if (!data.event_id) {
-        console.error('Id is required to delete an event.');
-      }
-
-      const updatedData = {
-        ...data,
-        status: data.status === Status.OPEN ? Status.CLOSED : Status.OPEN,
-      };
-
-      try {
-        setSelectedEvent(updatedData);
-        console.log(updatedData);
-        const updatedEvent = await updateEventOnServer(
-          data.event_id,
-          selectedEvent
-        );
-        console.log('Updated event on server:', updatedEvent);
-      } catch (error) {
-        console.error('Error archiving event:', error);
-      }
+  async function archiveEventOnServer(data: Event) {
+    if (!data.event_id) {
+      console.error('Id is required to delete an event.');
     }
 
-    // archiveEventOnServer(selectedEvent);
-  }, [selectedEvent]);
+    const updatedData = {
+      ...data,
+      status: data.status === Status.OPEN ? Status.CLOSED : Status.OPEN,
+    };
+
+    setSelectedEvent(updatedData);
+
+    try {
+      console.log(updatedData);
+      const updatedEvent = await updateEventOnServer(
+        data.event_id,
+        updatedData
+      );
+      console.log('Updated event on server:', updatedEvent);
+    } catch (error) {
+      console.error('Error archiving event:', error);
+    }
+  }
+
+  const updateEventOnServer = async (
+    updatedId: number,
+    data: any
+  ): Promise<ProcessedEvent | undefined> => {
+    try {
+      const response = await axios.put(`/api/events/${updatedId}`, data);
+
+      if (response.status === 200) {
+        return response.data as ProcessedEvent;
+      } else {
+        console.error('Unexpected response status:', response.status);
+        return undefined;
+      }
+    } catch (error) {
+      console.error('Error updating event:', error);
+      throw error;
+    }
+  };
 
   async function deleteEventOnServer(deletedId: number) {
     if (!deletedId) {
@@ -97,44 +113,6 @@ const EventEditPage = ({ params: { id } }: Props) => {
       throw error; // Propagate the error or handle it as needed
     }
   }
-  const updateEventOnServer = async (
-    updatedId: number,
-    data: any
-  ): Promise<ProcessedEvent | undefined> => {
-    try {
-      const response = await axios.put(`/api/events/${updatedId}`, data);
-
-      if (response.status === 200) {
-        return response.data as ProcessedEvent;
-      } else {
-        console.error('Unexpected response status:', response.status);
-        return undefined;
-      }
-    } catch (error) {
-      console.error('Error updating event:', error);
-      throw error;
-    }
-  };
-
-  // async function archiveEventOnServer(archivedId: number, data: any) {
-  //   if (!archivedId) {
-  //     console.error('Id is required to delete an event.');
-  //   }
-
-  //   const updatedData = {
-  //     ...data,
-  //     status: data.status === Status.OPEN ? Status.CLOSED : Status.OPEN,
-  //   };
-
-  //   try {
-  //     setSelectedEvent(updatedData);
-  //     console.log(updatedData);
-  //     const updatedEvent = await updateEventOnServer(archivedId, updatedData);
-  //     console.log('Updated event on server:', updatedEvent);
-  //   } catch (error) {
-  //     console.error('Error archiving event:', error);
-  //   }
-  // }
 
   let startDate,
     startTime: string | null = null;
@@ -226,10 +204,7 @@ const EventEditPage = ({ params: { id } }: Props) => {
                   </button>
                   <button
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                      archiveEventOnServer(
-                        selectedEvent.event_id,
-                        selectedEvent
-                      )
+                      archiveEventOnServer(selectedEvent)
                     }
                     className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
                   >

@@ -9,6 +9,10 @@ import Link from 'next/link';
 
 import { ImCross } from 'react-icons/im';
 import { PiWarningOctagonFill } from 'react-icons/pi';
+import { MdOutlineDone } from 'react-icons/md';
+import { MdDelete } from 'react-icons/md';
+import { RiArchive2Fill } from 'react-icons/ri';
+import { ProcessedEvent } from '@aldabil/react-scheduler/types';
 
 enum Status {
   OPEN = 'OPEN',
@@ -30,7 +34,10 @@ const DynamicSearch = () => {
   const [eventTitle, setEventTitle] = useState('');
   const [isSearchBarEmpty, setIsSearchBarEmpty] = useState(true);
   const [events, setEvents] = useState<Event[]>([]);
-  const [eventSearchFailed, setEventSearchFailed] = useState(false);
+  const [eventSearchFailed, setEventSearchFailed] = useState<boolean>(false);
+  const [eventDeleted, setEventDeleted] = useState<boolean>(false);
+  const [eventArchived, setEventArchived] = useState<boolean>(false);
+  const [unexpectedProblem, setUnexpectedProblem] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -55,13 +62,23 @@ const DynamicSearch = () => {
     event.preventDefault();
 
     if (!deletedId) {
-      return console.error('Id is required to delete an event.');
+      setUnexpectedProblem(true);
+      setTimeout(() => {
+        setEventSearchFailed(false);
+      }, 4200);
+      return false;
     }
 
     try {
       const response = await axios.delete(`/api/events/${deletedId}`);
 
       if (response.status === 200) {
+        setEventDeleted(true);
+        setTimeout(() => {
+          setEventDeleted(false);
+        }, 4200);
+        setData('');
+        setSelectedEvent(undefined);
         return true; // Event deleted successfully
       } else {
         console.error('Unexpected response status:', response.status);
@@ -72,6 +89,64 @@ const DynamicSearch = () => {
       throw error; // Propagate the error or handle it as needed
     }
   }
+
+  async function archiveEventOnServer(
+    event: React.MouseEvent<HTMLButtonElement>,
+    archivedId: any
+  ) {
+    event.preventDefault();
+
+    if (!archivedId) {
+      setUnexpectedProblem(true);
+      setTimeout(() => {
+        setEventSearchFailed(false);
+      }, 4200);
+    }
+
+    const updatedData = {
+      ...selectedEvent,
+      status:
+        selectedEvent!.status === Status.OPEN ? Status.CLOSED : Status.OPEN,
+    };
+
+    // setSelectedEvent(updatedData);
+
+    try {
+      console.log(updatedData);
+      const updatedEvent = await updateEventOnServer(archivedId, updatedData);
+
+      setEventArchived(true);
+      setTimeout(() => {
+        setEventArchived(false);
+      }, 4200);
+
+      setData('');
+      setSelectedEvent(undefined);
+
+      console.log('Updated event on server:', updatedEvent);
+    } catch (error) {
+      console.error('Error archiving event:', error);
+    }
+  }
+
+  const updateEventOnServer = async (
+    updatedId: number,
+    data: any
+  ): Promise<ProcessedEvent | undefined> => {
+    try {
+      const response = await axios.put(`/api/events/${updatedId}`, data);
+
+      if (response.status === 200) {
+        return response.data as ProcessedEvent;
+      } else {
+        console.error('Unexpected response status:', response.status);
+        return undefined;
+      }
+    } catch (error) {
+      console.error('Error updating event:', error);
+      throw error;
+    }
+  };
 
   const handleInput = async (input: string) => {
     setData(input);
@@ -167,7 +242,7 @@ const DynamicSearch = () => {
     setEventSearchFailed(true);
     setTimeout(() => {
       setEventSearchFailed(false);
-    }, 4500);
+    }, 4200);
   };
 
   return (
@@ -175,53 +250,90 @@ const DynamicSearch = () => {
       <form
         onSubmit={handleSubmit}
         className={`${
-          eventSearchFailed ? 'mr-[250px] md:mr-[375px]' : ''
+          eventSearchFailed ||
+          eventDeleted ||
+          eventArchived ||
+          unexpectedProblem
+            ? 'mr-[250px] md:mr-[375px]'
+            : ''
         } flex z-50 mt-6`}
       >
         <div className="flex">
           <label
             htmlFor="search"
-            className={`${eventSearchFailed ? 'hidden' : ''}`}
+            className={`${
+              eventSearchFailed ||
+              eventDeleted ||
+              eventArchived ||
+              unexpectedProblem
+                ? 'hidden'
+                : ''
+            }`}
           >
             <IoMdSearch className="text-3xl fill-slate-400 absolute pl-2 custom-z-index-greater" />
           </label>
-          {!eventSearchFailed && (
-            <input
-              type="search"
-              id="search"
-              name="search"
-              value={data}
-              onChange={(e) => handleInput(e.target.value)}
-              className={`${
-                selectedEvent ||
-                data.toLowerCase() === 'event' ||
-                eventSearchFailed
-                  ? 'bg-white dark:bg-gray-800 rounded-t-xl'
-                  : 'shadow-lg active:border-2 hover:shadow-md active:shadow-lg dark:bg-gray-800 rounded-xl'
-              } w-40 md:w-72 text-top max-w-96 pl-10 p-0.5 custom-z-index-great outline-none ease-in-out active:scale-y-105 transition-all duration-500 font-semibold`}
-            />
-          )}
-          {!eventSearchFailed && (
-            <button
-              className={`custom-z-index-great ml-[10px] px-3 bg-slate-50 dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:border active:bg-slate-200 active:scale-x-105 dark:active:bg-slate-800 duration-500 transition-all rounded-lg shadow-lg hover:shadow-xl font-light text-slate-600 dark:text-slate-300`}
-              type="submit"
-            >
-              Search
-            </button>
-          )}
+          {!eventSearchFailed &&
+            !eventDeleted &&
+            !eventArchived &&
+            !unexpectedProblem && (
+              <input
+                type="search"
+                id="search"
+                name="search"
+                value={data}
+                onChange={(e) => handleInput(e.target.value)}
+                className={`${
+                  selectedEvent ||
+                  data.toLowerCase() === 'event' ||
+                  eventSearchFailed ||
+                  eventDeleted ||
+                  eventArchived ||
+                  unexpectedProblem
+                    ? 'bg-white dark:bg-gray-800 rounded-t-xl'
+                    : 'shadow-lg active:border-2 hover:shadow-md active:shadow-lg dark:bg-gray-800 rounded-xl'
+                } w-40 md:w-72 text-top max-w-96 pl-10 p-0.5 custom-z-index-great outline-none ease-in-out active:scale-y-105 transition-all duration-500 font-semibold`}
+              />
+            )}
+          {!eventSearchFailed &&
+            !eventDeleted &&
+            !eventArchived &&
+            !unexpectedProblem && (
+              <button
+                className={`custom-z-index-great ml-[10px] px-3 bg-slate-50 dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:border active:bg-slate-200 active:scale-x-105 dark:active:bg-slate-800 duration-500 transition-all rounded-lg shadow-lg hover:shadow-xl font-light text-slate-600 dark:text-slate-300`}
+                type="submit"
+              >
+                Search
+              </button>
+            )}
         </div>
 
         <div
           className={`${
-            selectedEvent || data.toLowerCase() === 'event' || eventSearchFailed
+            selectedEvent ||
+            data.toLowerCase() === 'event' ||
+            eventSearchFailed ||
+            eventDeleted ||
+            eventArchived ||
+            unexpectedProblem
               ? 'shadow-lg md:active:border-2 hover:shadow-md active:shadow-lg bg-white dark:bg-gray-800'
               : ' bg-transparent'
-          } ${eventSearchFailed ? '' : 'pt-[26px]'}
+          } ${
+            eventSearchFailed ||
+            eventDeleted ||
+            eventArchived ||
+            unexpectedProblem
+              ? ''
+              : 'pt-[26px]'
+          }
           overflow-x-auto flex flex-col justify-around items-center rounded-xl absolute w-[245px] max-h-[330px] text-top md:w-96 p-0.5 custom-z-index ease-in-out transition-all duration-500 font-semibold outline-none`}
         >
           {/* Code to display searched event delete and modify buttons */}
 
-          {selectedEvent && !eventSearchFailed ? (
+          {selectedEvent &&
+          !eventSearchFailed &&
+          !eventDeleted &&
+          !eventArchived &&
+          !unexpectedProblem ? (
             <>
               <div className="flex flex-col items-center w-full">
                 <p className="font-mono">{selectedEvent ? eventTitle : ''}</p>
@@ -254,9 +366,9 @@ const DynamicSearch = () => {
                   Delete
                 </button>
                 <button
-                  // onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                  //   handleButtonClick(e)
-                  // }
+                  onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                    archiveEventOnServer(e, selectedEvent.event_id)
+                  }
                   className="custom-z-index-great px-3 py-3 bg-zinc-100 hover:bg-zinc-200 rounded-lg shadow-xl transition-all hover:shadow-xl font-light text-slate-600"
                 >
                   Archive
@@ -295,7 +407,7 @@ const DynamicSearch = () => {
 
           {eventSearchFailed && (
             <div className="flex space-x-5 py-[22px] transition-all">
-              {data ? (
+              {data && eventSearchFailed ? (
                 <>
                   <ImCross className="text-red-600 text-xl" />
                   <h1 className="font-medium">Event does not exist</h1>
@@ -306,6 +418,27 @@ const DynamicSearch = () => {
                   <h1 className="font-medium">Event name is required</h1>
                 </>
               )}
+            </div>
+          )}
+
+          {eventDeleted && (
+            <div className="flex space-x-5 py-[22px] transition-all">
+              <MdDelete className="text-red-400 text-2xl" />
+              <h1 className="font-medium">Event deleted successfully</h1>
+            </div>
+          )}
+
+          {eventArchived && (
+            <div className="flex space-x-5 py-[22px] transition-all">
+              <RiArchive2Fill className="text-slate-400 text-xl" />
+              <h1 className="font-medium">Event archived successfully</h1>
+            </div>
+          )}
+
+          {unexpectedProblem && (
+            <div className="flex space-x-5 py-[22px] transition-all">
+              <ImCross className="text-red-600 text-xl" />
+              <h1 className="font-medium">Something went wrong</h1>
             </div>
           )}
         </div>

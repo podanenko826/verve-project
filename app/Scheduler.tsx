@@ -7,7 +7,9 @@ import { EventActions, ProcessedEvent } from '@aldabil/react-scheduler/types';
 import { useSearchParams } from 'next/navigation';
 
 import React from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+
+import { IoRefresh } from 'react-icons/io5';
 
 const prisma = new PrismaClient();
 
@@ -29,10 +31,7 @@ const ISheduller = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event>();
   const [eventStart, setEventStart] = useState<Date>();
-  // let startDateTime: Date | undefined = new Date();
   const [id, setId] = useState('');
-
-  // // console.log(event_id);
 
   const searchParams = useSearchParams();
 
@@ -59,6 +58,7 @@ const ISheduller = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('/api/events');
+
         setEvents(response.data);
       } catch (error) {
         console.error('Error fetching event:', error);
@@ -162,43 +162,59 @@ const ISheduller = () => {
   return (
     <div className="max-h-min md:max-h-screen h-5/6 rounded-2xl mx-0 lg:mx-2 overflow-y-scroll">
       {events !== null && !search && !eventStart && (
-        <Scheduler
-          view="day"
-          events={events.map((mappedEvent) => ({
-            event_id: mappedEvent.event_id,
-            title: mappedEvent.title,
-            start: new Date(mappedEvent.start),
-            end: new Date(mappedEvent.end),
-          }))}
-          // locale={uk}
-          hourFormat="24"
-          onConfirm={handleConfirm}
-          onDelete={handleDelete}
-          // onEventDrop={handleConfirm}
-          onSelectedDateChange={refetchData}
-          // selectedDate={eventStart}
-          // draggable={false}
-        />
+        <>
+          <button
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => refetchData()}
+            className="absolute font-sans rounded-[4.5px] hover:bg-zinc-100 active:bg-zinc-300 duration-300 py-1.5 px-1.5 p mt-0.5 flex ml-44 custom-z-index-greatest"
+          >
+            <IoRefresh className="text-2xl mr-1 pb-0.5" />
+            Refresh
+          </button>
+
+          <Scheduler
+            view="day"
+            events={events.map((mappedEvent) => ({
+              event_id: mappedEvent.event_id,
+              title: mappedEvent.title,
+              start: new Date(mappedEvent.start),
+              end: new Date(mappedEvent.end),
+            }))}
+            // locale={uk}
+            hourFormat="24"
+            onConfirm={handleConfirm}
+            onDelete={handleDelete}
+            // onEventDrop={handleConfirm}
+            onSelectedDateChange={refetchData}
+            // selectedDate={eventStart}
+            // draggable={false}
+          />
+        </>
       )}
 
       {events !== null && search && eventStart && (
-        <Scheduler
-          view="day"
-          events={events.map((mappedEvent) => ({
-            event_id: mappedEvent.event_id,
-            title: mappedEvent.title,
-            start: new Date(mappedEvent.start),
-            end: new Date(mappedEvent.end),
-          }))}
-          // locale={uk}
-          hourFormat="24"
-          onConfirm={handleConfirm}
-          onDelete={handleDelete}
-          // onEventDrop={handleConfirm}
-          onSelectedDateChange={refetchData}
-          selectedDate={eventStart}
-          // draggable={false}
-        />
+        <>
+          <button>
+            <IoRefresh />
+          </button>
+
+          <Scheduler
+            view="day"
+            events={events.map((mappedEvent) => ({
+              event_id: mappedEvent.event_id,
+              title: mappedEvent.title,
+              start: new Date(mappedEvent.start),
+              end: new Date(mappedEvent.end),
+            }))}
+            // locale={uk}
+            hourFormat="24"
+            onConfirm={handleConfirm}
+            onDelete={handleDelete}
+            // onEventDrop={handleConfirm}
+            onSelectedDateChange={refetchData}
+            selectedDate={eventStart}
+            // draggable={false}
+          />
+        </>
       )}
       <div>
         <button

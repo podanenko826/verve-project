@@ -4,10 +4,13 @@ import { z } from 'zod';
 
 const prisma = new PrismaClient();
 
+const Status = z.enum(['OPEN', 'IN_PROGRESS', 'CLOSED']);
+
 const schema = z.object({
   title: z.string().min(3).max(255),
   start: z.string().min(20).max(50),
   end: z.string().min(20).max(50),
+  status: Status.default('OPEN'),
 });
 
 export async function GET(
@@ -79,6 +82,7 @@ export async function PUT(
         title: body.title,
         start: body.start,
         end: body.end,
+        status: body.status,
       },
     });
 

@@ -11,20 +11,13 @@ enum Status {
   CLOSED = 'CLOSED',
 }
 
-const createEventSchema = z.object({
-  title: z.string().min(3).max(255),
-  start: z.string().min(20),
-  end: z.string().min(20),
-  // userId: z.number(),
-});
-
 export async function GET(response: NextResponse) {
   try {
     const allEvents = await prisma.event.findMany();
     let events = [];
 
     for (let i = 0; i < allEvents.length; i++) {
-      if (allEvents[i].status !== Status.CLOSED) {
+      if (allEvents[i].status === Status.CLOSED) {
         events.push(allEvents[i]);
       }
     }
@@ -42,18 +35,4 @@ export async function GET(response: NextResponse) {
       { status: 500 }
     );
   }
-}
-
-export async function POST(request: NextRequest) {
-  const body = await request.json();
-  const validation = createEventSchema.safeParse(body);
-  if (!validation.success) {
-    return NextResponse.json(validation.error.errors, { status: 400 });
-  }
-
-  const newEvent = await prisma.event.create({
-    data: { title: body.title, start: body.start, end: body.end },
-  });
-
-  return NextResponse.json(newEvent, { status: 201 });
 }
