@@ -160,7 +160,7 @@ const ISheduller = () => {
   };
 
   return (
-    <div className="max-h-min md:max-h-screen h-5/6 rounded-2xl mx-0 lg:mx-2 overflow-y-scroll">
+    <div className="max-h-min md:max-h-screen h-5/6 rounded-2xl mx-0 albertsans lg:mx-2 overflow-y-scroll">
       {events !== null && !search && !eventStart && (
         <>
           <button

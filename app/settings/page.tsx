@@ -5,7 +5,7 @@ import NavBar from '../NavBar';
 export default function SettingsPage() {
   return (
     <>
-      <div className="flex w-full">
+      <div className="flex w-full albertsans">
         <div className="hidden md:block h-full">
           <SideBar />
         </div>

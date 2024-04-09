@@ -22,6 +22,10 @@ const config: Config = {
         'gradient-home-content1':
           'linear-gradient(343deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%)',
       },
+      boxShadow: {
+        'shadow-sidebar':
+          'rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset',
+      },
     },
   },
   plugins: [],

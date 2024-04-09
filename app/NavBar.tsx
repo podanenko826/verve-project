@@ -106,7 +106,7 @@ const NavBar = () => {
 
   return (
     <>
-      <nav className="flex dark:bg-gray-950 justify-between border-b-[1.5px] border-zinc-200 dark:border-zinc-900 mb-10 min-w-full h-20">
+      <nav className="flex albertsans dark:bg-gray-950 justify-between border-b-[1.5px] border-zinc-200 dark:border-zinc-900 mb-10 min-w-full h-20">
         <div className="w-full pl-5 flex justify-end">
           <DynamicSearch />
         </div>

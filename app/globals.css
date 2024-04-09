@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  @font-face {
+    font-family: 'albert_sans';
+    src: url('./fonts/albertsans-regular-webfont.woff2') format('woff2'),
+      url('./fonts/albertsans-regular-webfont.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'albert_sans';
+    src: url('./fonts/albertsans-bold-webfont.woff2') format('woff2'),
+      url('./fonts/albertsans-bold-webfont.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'jtolifer';
+    src: url('./fonts/jtolifer-semibold-webfont.woff2') format('woff2'),
+      url('./fonts/jtolifer-semibold-webfont.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'paytone_one';
+    src: url('./fonts/paytoneone-regular-webfont.woff2') format('woff2'),
+      url('./fonts/paytoneone-regular-webfont.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+  }
+}
+.albertsans {
+  font-family: 'albert_sans', arial, system-ui;
+}
+.jtolifer {
+  font-family: 'jtolifer', arial, system-ui;
+}
+.paytoneone {
+  font-family: 'paytone_one', arial, system-ui;
+}
+
 :root {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -10,6 +53,7 @@
   --background-start-rgb: 245, 245, 245;
   --background-end-rgb: 255, 255, 255;
 }
+
 @keyframes dynamic {
   0% {
     width: 24rem;

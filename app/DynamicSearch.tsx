@@ -254,7 +254,7 @@ const DynamicSearch = () => {
           eventDeleted ||
           eventArchived ||
           unexpectedProblem
-            ? 'mr-[250px] md:mr-[375px]'
+            ? 'mr-[250px] md:mr-[375px] albertsans'
             : ''
         } flex z-50 mt-6`}
       >
@@ -291,7 +291,7 @@ const DynamicSearch = () => {
                   unexpectedProblem
                     ? 'bg-white dark:bg-gray-800 rounded-t-xl'
                     : 'shadow-lg active:border-2 hover:shadow-md active:shadow-lg dark:bg-gray-800 rounded-xl'
-                } w-40 md:w-72 text-top max-w-96 pl-10 p-0.5 custom-z-index-great outline-none ease-in-out active:scale-y-105 transition-all duration-500 font-semibold`}
+                } w-40 md:w-72 text-top max-w-96 pl-10 p-0.5 custom-z-index-great outline-none ease-in-out active:scale-y-105 transition-all duration-500`}
               />
             )}
           {!eventSearchFailed &&
@@ -299,7 +299,7 @@ const DynamicSearch = () => {
             !eventArchived &&
             !unexpectedProblem && (
               <button
-                className={`custom-z-index-great ml-[10px] px-3 bg-slate-50 dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:border active:bg-slate-200 active:scale-x-105 dark:active:bg-slate-800 duration-500 transition-all rounded-lg shadow-lg hover:shadow-xl font-light text-slate-600 dark:text-slate-300`}
+                className={`custom-z-index-great ml-[10px] px-3 bg-slate-50 dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:border active:bg-slate-200 active:scale-x-105 dark:active:bg-slate-800 duration-500 transition-all rounded-lg shadow-lg hover:shadow-xl text-slate-600 dark:text-slate-300`}
                 type="submit"
               >
                 Search
@@ -325,7 +325,7 @@ const DynamicSearch = () => {
               ? ''
               : 'pt-[26px]'
           }
-          overflow-x-auto flex flex-col justify-around items-center rounded-xl absolute w-[245px] max-h-[330px] text-top md:w-96 p-0.5 custom-z-index ease-in-out transition-all duration-500 font-semibold outline-none`}
+          overflow-x-auto flex flex-col justify-around items-center rounded-xl absolute w-[245px] max-h-[330px] text-top md:w-96 p-0.5 custom-z-index ease-in-out transition-all duration-500 albertsans outline-none`}
         >
           {/* Code to display searched event delete and modify buttons */}
 
@@ -336,13 +336,13 @@ const DynamicSearch = () => {
           !unexpectedProblem ? (
             <>
               <div className="flex flex-col items-center w-full">
-                <p className="font-mono">{selectedEvent ? eventTitle : ''}</p>
+                <p>{selectedEvent ? eventTitle : ''}</p>
                 {startDate === endDate ? (
-                  <p className="font-normal text-sm text-center px-10">
+                  <p className="text-sm text-center px-10">
                     {startDate}, {startTime} - {endTime}
                   </p>
                 ) : (
-                  <p className="font-normal text-[16px] text-center px-6 lg:px-4">
+                  <p className="text-[16px] text-center px-6 lg:px-4">
                     From {startDate} to {endDate}, <br />
                     {startTime} - {endTime}
                   </p>
@@ -353,7 +353,7 @@ const DynamicSearch = () => {
                   onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                     handleEdit(e)
                   }
-                  className="custom-z-index-great px-3 py-3 bg-zinc-100 hover:bg-zinc-200 rounded-lg shadow-xl transition-all hover:shadow-xl font-light text-slate-600"
+                  className="custom-z-index-great px-3 py-3 bg-zinc-100 hover:bg-zinc-200 rounded-lg shadow-xl transition-all hover:shadow-xl text-slate-600"
                 >
                   Edit
                 </button>
@@ -361,7 +361,7 @@ const DynamicSearch = () => {
                   onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                     deleteEventOnServer(e, selectedEvent.event_id)
                   }
-                  className="custom-z-index-great px-3 py-3 bg-zinc-100 hover:bg-zinc-200 rounded-lg shadow-xl transition-all hover:shadow-xl font-light text-slate-600"
+                  className="custom-z-index-great px-3 py-3 bg-zinc-100 hover:bg-zinc-200 rounded-lg shadow-xl transition-all hover:shadow-xl text-slate-600"
                 >
                   Delete
                 </button>
@@ -369,7 +369,7 @@ const DynamicSearch = () => {
                   onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                     archiveEventOnServer(e, selectedEvent.event_id)
                   }
-                  className="custom-z-index-great px-3 py-3 bg-zinc-100 hover:bg-zinc-200 rounded-lg shadow-xl transition-all hover:shadow-xl font-light text-slate-600"
+                  className="custom-z-index-great px-3 py-3 bg-zinc-100 hover:bg-zinc-200 rounded-lg shadow-xl transition-all hover:shadow-xl text-slate-600"
                 >
                   Archive
                 </button>

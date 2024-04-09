@@ -28,7 +28,7 @@ const DashboardComponent = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center w-full space-y-6 h-5/6 px-8 md:px-16 overflow-y-scroll">
+      <div className="flex albertsans flex-col items-center w-full space-y-6 h-5/6 px-8 md:px-16 overflow-y-scroll">
         <div className="flex flex-col md:flex-row w-full justify-center space-x-6">
           <div className="flex flex-col w-full md:w-1/3 p-6 justify-center space-y-3 rounded-[25px] border bg-white dark:bg-slate-800">
             <h2 className="text-slate-500 text-[14px] font-normal uppercase">
