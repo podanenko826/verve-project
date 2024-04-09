@@ -216,14 +216,7 @@ const ISheduller = () => {
           />
         </>
       )}
-      <div>
-        <button
-          className="w-32 m-4 h-10 bg-slate-400 hover:bg-slate-300 active:bg-slate-500 border-2 dark:border-0"
-          onClick={refetchData}
-        >
-          Refresh data
-        </button>
-
+      <div className="ml-5">
         <label>
           Enter ID:
           <input
