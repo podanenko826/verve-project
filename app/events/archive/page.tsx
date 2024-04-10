@@ -143,7 +143,7 @@ const EventEditPage = () => {
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                   refetchData()
                 }
-                className="mt-2 font-sans rounded-[4.5px] h-9 bg-zinc-200 hover:bg-zinc-100 active:bg-zinc-300 duration-300 px-1.5 py-1.5 flex ml-44 custom-z-index-greatest"
+                className="mt-2 font-sans rounded-[4.5px] h-9 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-300 dark:active:bg-zinc-400 duration-300 px-1.5 py-1.5 flex ml-44 custom-z-index-greatest"
               >
                 <IoRefresh className="text-2xl mr-1 pb-0.5" />
                 Refresh
@@ -182,7 +182,7 @@ const EventEditPage = () => {
                   onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                     unarchiveEventOnServer(item)
                   }
-                  className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                  className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-500 active:bg-zinc-400 duration-300 rounded-[4.5px]"
                 >
                   {item.status === Status.OPEN ? 'Archive' : 'Unarchive'}
                 </button>
@@ -191,7 +191,7 @@ const EventEditPage = () => {
                   onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                     deleteEventOnServer(item.event_id)
                   }
-                  className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                  className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-500 active:bg-zinc-400 duration-300 rounded-[4.5px]"
                 >
                   Delete
                 </button>

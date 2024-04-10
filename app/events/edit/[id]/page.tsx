@@ -182,7 +182,7 @@ const EventEditPage = ({ params: { id } }: Props) => {
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                       deleteEventOnServer(selectedEvent.event_id)
                     }
-                    className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                    className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-500 active:bg-zinc-400 duration-300 rounded-[4.5px]"
                   >
                     Rename
                   </button>
@@ -190,7 +190,7 @@ const EventEditPage = ({ params: { id } }: Props) => {
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                       deleteEventOnServer(selectedEvent.event_id)
                     }
-                    className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                    className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-500 active:bg-zinc-400 duration-300 rounded-[4.5px]"
                   >
                     Change time
                   </button>
@@ -198,7 +198,7 @@ const EventEditPage = ({ params: { id } }: Props) => {
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                       deleteEventOnServer(selectedEvent.event_id)
                     }
-                    className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                    className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-500 active:bg-zinc-400 duration-300 rounded-[4.5px]"
                   >
                     Delete
                   </button>
@@ -206,7 +206,7 @@ const EventEditPage = ({ params: { id } }: Props) => {
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                       archiveEventOnServer(selectedEvent)
                     }
-                    className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
+                    className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-500 active:bg-zinc-400 duration-300 rounded-[4.5px]"
                   >
                     {selectedEvent.status === Status.OPEN
                       ? 'Archive'

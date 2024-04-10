@@ -289,7 +289,7 @@ const DynamicSearch = () => {
                   eventDeleted ||
                   eventArchived ||
                   unexpectedProblem
-                    ? 'bg-white dark:bg-gray-800 rounded-t-xl'
+                    ? 'bg-transparent rounded-t-xl'
                     : 'shadow-lg active:border-2 hover:shadow-md active:shadow-lg dark:bg-gray-800 rounded-xl'
                 } w-40 md:w-72 text-top max-w-96 pl-10 p-0.5 custom-z-index-great outline-none ease-in-out active:scale-y-105 transition-all duration-500`}
               />
@@ -353,7 +353,7 @@ const DynamicSearch = () => {
                   onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                     handleEdit(e)
                   }
-                  className="custom-z-index-great px-3 py-3 bg-zinc-100 hover:bg-zinc-200 rounded-lg shadow-xl transition-all hover:shadow-xl text-slate-600"
+                  className="custom-z-index-great px-3 py-3 bg-zinc-50 dark:bg-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-[4.5px] transition-all text-black dark:text-white"
                 >
                   Edit
                 </button>
@@ -361,7 +361,7 @@ const DynamicSearch = () => {
                   onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                     deleteEventOnServer(e, selectedEvent.event_id)
                   }
-                  className="custom-z-index-great px-3 py-3 bg-zinc-100 hover:bg-zinc-200 rounded-lg shadow-xl transition-all hover:shadow-xl text-slate-600"
+                  className="custom-z-index-great px-3 py-3 bg-zinc-50 dark:bg-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-[4.5px] transition-all text-black dark:text-white"
                 >
                   Delete
                 </button>
@@ -369,7 +369,7 @@ const DynamicSearch = () => {
                   onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                     archiveEventOnServer(e, selectedEvent.event_id)
                   }
-                  className="custom-z-index-great px-3 py-3 bg-zinc-100 hover:bg-zinc-200 rounded-lg shadow-xl transition-all hover:shadow-xl text-slate-600"
+                  className="custom-z-index-great px-3 py-3 bg-zinc-50 dark:bg-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-[4.5px] transition-all text-black dark:text-white"
                 >
                   Archive
                 </button>
