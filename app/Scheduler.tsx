@@ -165,7 +165,7 @@ const ISheduller = () => {
         <>
           <button
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => refetchData()}
-            className="text-white dark:text-zinc-400 absolute font-sans rounded-[4.5px] hover:bg-zinc-100 dark:hover:bg-zinc-700 active:bg-zinc-300 dark:active:bg-zinc-500 duration-300 py-1.5 px-1.5 p mt-0.5 flex ml-44 custom-z-index-greater"
+            className="text-black dark:text-zinc-400 absolute font-sans rounded-[4.5px] hover:bg-zinc-100 dark:hover:bg-zinc-700 active:bg-zinc-300 dark:active:bg-zinc-500 duration-300 py-1.5 px-1.5 p mt-0.5 flex ml-44 custom-z-index-greater"
           >
             <IoRefresh className="text-2xl mr-1 pb-0.5" />
             Refresh

@@ -41,7 +41,7 @@ const DynamicSearch = () => {
 
   const [searchOpened, setSearchOpened] = useState<boolean>(false);
 
-  const contextMenuRef = useRef<HTMLButtonElement>(null);
+  const dynamicSearchRef = useRef<HTMLLabelElement>(null);
 
   const router = useRouter();
 
@@ -75,8 +75,20 @@ const DynamicSearch = () => {
     };
   }, []);
 
+  const refetchData = async () => {
+    try {
+      const response = await axios.get('/api/events');
+
+      setEvents(response.data);
+    } catch (error) {
+      console.error('Error fetching event:', error);
+    }
+  };
+
   const handleDynamicSearchClick = () => {
     setSearchOpened(!searchOpened);
+
+    refetchData();
   };
 
   async function deleteEventOnServer(
@@ -286,6 +298,7 @@ const DynamicSearch = () => {
         <div onClick={handleDynamicSearchClick} className="dynamic-search flex">
           <label
             htmlFor="search"
+            ref={dynamicSearchRef}
             className={`${
               eventSearchFailed ||
               eventDeleted ||
