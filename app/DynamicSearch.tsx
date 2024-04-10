@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IoMdSearch } from 'react-icons/io';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -39,6 +39,10 @@ const DynamicSearch = () => {
   const [eventArchived, setEventArchived] = useState<boolean>(false);
   const [unexpectedProblem, setUnexpectedProblem] = useState<boolean>(false);
 
+  const [searchOpened, setSearchOpened] = useState<boolean>(false);
+
+  const contextMenuRef = useRef<HTMLButtonElement>(null);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -54,6 +58,26 @@ const DynamicSearch = () => {
 
     fetchEvent();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      // Check if the click occurred outside of the context menu
+      if (!target.closest('.dynamic-search')) {
+        setSearchOpened(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+  const handleDynamicSearchClick = () => {
+    setSearchOpened(!searchOpened);
+  };
 
   async function deleteEventOnServer(
     event: React.MouseEvent<HTMLButtonElement>,
@@ -228,7 +252,6 @@ const DynamicSearch = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    let searchedEvent;
 
     if (data) {
       for (const event of events) {
@@ -243,12 +266,14 @@ const DynamicSearch = () => {
     setTimeout(() => {
       setEventSearchFailed(false);
     }, 4200);
+    setSearchOpened(false);
   };
 
   return (
     <div>
       <form
         onSubmit={handleSubmit}
+        autoComplete="off"
         className={`${
           eventSearchFailed ||
           eventDeleted ||
@@ -258,7 +283,7 @@ const DynamicSearch = () => {
             : ''
         } flex z-50 mt-6`}
       >
-        <div className="flex">
+        <div onClick={handleDynamicSearchClick} className="dynamic-search flex">
           <label
             htmlFor="search"
             className={`${
@@ -283,8 +308,7 @@ const DynamicSearch = () => {
                 value={data}
                 onChange={(e) => handleInput(e.target.value)}
                 className={`${
-                  selectedEvent ||
-                  data.toLowerCase() === 'event' ||
+                  searchOpened ||
                   eventSearchFailed ||
                   eventDeleted ||
                   eventArchived ||
@@ -299,7 +323,8 @@ const DynamicSearch = () => {
             !eventArchived &&
             !unexpectedProblem && (
               <button
-                className={`custom-z-index-great ml-[10px] px-3 bg-slate-50 dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:border active:bg-slate-200 active:scale-x-105 dark:active:bg-slate-800 duration-500 transition-all rounded-lg shadow-lg hover:shadow-xl text-slate-600 dark:text-slate-300`}
+                className={`dynamic-search custom-z-index-great ml-[10px] px-3 bg-slate-50 dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:border active:bg-slate-200 active:scale-x-105 dark:active:bg-slate-800 duration-500 transition-all rounded-lg shadow-lg hover:shadow-xl text-slate-600 dark:text-slate-300`}
+                onClick={handleDynamicSearchClick}
                 type="submit"
               >
                 Search
@@ -309,8 +334,7 @@ const DynamicSearch = () => {
 
         <div
           className={`${
-            selectedEvent ||
-            data.toLowerCase() === 'event' ||
+            searchOpened ||
             eventSearchFailed ||
             eventDeleted ||
             eventArchived ||
@@ -325,11 +349,12 @@ const DynamicSearch = () => {
               ? ''
               : 'pt-[26px]'
           }
-          overflow-x-auto flex flex-col justify-around items-center rounded-xl absolute w-[245px] max-h-[330px] text-top md:w-96 p-0.5 custom-z-index ease-in-out transition-all duration-500 albertsans outline-none`}
+          dynamic-search overflow-x-auto flex flex-col justify-around items-center rounded-xl absolute w-[245px] max-h-[330px] text-top md:w-96 p-0.5 custom-z-index ease-in-out transition-all duration-500 albertsans outline-none`}
         >
           {/* Code to display searched event delete and modify buttons */}
 
-          {selectedEvent &&
+          {searchOpened &&
+          selectedEvent &&
           !eventSearchFailed &&
           !eventDeleted &&
           !eventArchived &&
@@ -381,9 +406,7 @@ const DynamicSearch = () => {
 
           {/* Code to display all events in a search bar */}
 
-          {data.toLowerCase() === 'event' &&
-          selectedEvent?.title !== 'event' &&
-          !eventSearchFailed ? (
+          {searchOpened && !eventTitle && !eventSearchFailed ? (
             <ul className="mt-[2px]">
               {events.map((item) => (
                 <li key={item.event_id}>
@@ -392,7 +415,7 @@ const DynamicSearch = () => {
                       handleEventChoose(e, item.event_id)
                     }
                     key={item.event_id}
-                    className="w-[250px] md:w-[380px] overflow-scroll text-center hover:bg-slate-100 dark:hover:bg-gray-700 font-normal py-[6px] border-y border-zinc-100 dark:border-zinc-700 duration-300 transition-all"
+                    className="dynamic-search w-[250px] md:w-[380px] overflow-scroll text-center hover:bg-slate-100 dark:hover:bg-gray-700 font-normal py-[6px] border-y border-zinc-100 dark:border-zinc-700 duration-300 transition-all"
                   >
                     {item.title}
                   </button>
