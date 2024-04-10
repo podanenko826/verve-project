@@ -9,6 +9,7 @@ import { MdOutlineAccountCircle } from 'react-icons/md';
 import { GoSignOut } from 'react-icons/go';
 import { RiDashboard2Line } from 'react-icons/ri';
 import { RiCalendarEventLine } from 'react-icons/ri';
+import { RiArchive2Line } from 'react-icons/ri';
 
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -64,10 +65,16 @@ const NavBar = () => {
       id: 1,
     },
     {
+      icon: <RiArchive2Line />,
+      label: 'Archive',
+      href: '/events/archive',
+      id: 2,
+    },
+    {
       icon: <GoSignOut />,
       label: 'Sign out',
       href: '/api/auth/signout',
-      id: 2,
+      id: 3,
     },
   ];
 

@@ -143,9 +143,10 @@ const EventEditPage = () => {
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                   refetchData()
                 }
-                className="mt-2 h-min p-1 rounded-lg bg-gray-300 hover:bg-gray-200 active:bg-gray-400"
+                className="mt-2 font-sans rounded-[4.5px] h-9 bg-zinc-200 hover:bg-zinc-100 active:bg-zinc-300 duration-300 px-1.5 py-1.5 flex ml-44 custom-z-index-greatest"
               >
-                <IoRefresh className="text-3xl hover:rotate-180 duration-300" />
+                <IoRefresh className="text-2xl mr-1 pb-0.5" />
+                Refresh
               </button>
             </div>
 
