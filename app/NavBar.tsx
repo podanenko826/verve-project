@@ -104,10 +104,16 @@ const NavBar = () => {
       id: 3,
     },
     {
+      icon: <RiArchive2Line />,
+      label: 'Archive',
+      href: '/events/archive',
+      id: 4,
+    },
+    {
       icon: <GoSignOut />,
       label: 'Sign out',
       href: '/api/auth/signout',
-      id: 4,
+      id: 5,
     },
   ];
 

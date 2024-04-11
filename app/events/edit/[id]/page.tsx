@@ -145,7 +145,7 @@ const EventEditPage = ({ params: { id } }: Props) => {
   return (
     <>
       <div className="flex w-screen albertsans">
-        <div>
+        <div className="hidden md:block">
           <SideBar />
         </div>
         <div className="flex flex-col w-screen">

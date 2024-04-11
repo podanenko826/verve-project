@@ -125,7 +125,7 @@ const EventEditPage = () => {
   return (
     <>
       <div className="flex w-screen albertsans">
-        <div>
+        <div className="hidden md:block">
           <SideBar />
         </div>
         <div className="flex flex-col w-screen">
@@ -143,13 +143,19 @@ const EventEditPage = () => {
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                   refetchData()
                 }
-                className="mt-2 font-sans rounded-[4.5px] h-9 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-300 dark:active:bg-zinc-400 duration-300 px-1.5 py-1.5 flex ml-44 custom-z-index-greatest"
+                className="mt-2 font-sans rounded-[4.5px] h-9 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-300 dark:active:bg-zinc-400 duration-300 px-1.5 py-1.5 flex ml-44"
               >
                 <IoRefresh className="text-2xl mr-1 pb-0.5" />
                 Refresh
               </button>
             </div>
-
+            {archivedEvents ? (
+              ''
+            ) : (
+              <>
+                <h1>Event does not exist!</h1>
+              </>
+            )}
             {archivedEvents.map((item) => (
               <div key={item.event_id} className="flex mt-10 space-x-5">
                 <p className="font-medium">Name:</p>
@@ -197,24 +203,6 @@ const EventEditPage = () => {
                 </button>
               </div>
             ))}
-            {archivedEvents ? (
-              <>
-                <div className="space-x-5">
-                  {/* <button
-                        onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                          unarchiveEventOnServer(archivedEvents[0])
-                        }
-                        className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 duration-300 rounded-xl shadow-xl"
-                      >
-                        {archivedEvents.status === Status.OPEN
-                          ? 'Archive'
-                          : 'Unarchive'}
-                      </button> */}
-                </div>
-              </>
-            ) : (
-              <h1>Event does not exist!</h1>
-            )}
           </div>
         </div>
       </div>

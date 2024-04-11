@@ -335,7 +335,7 @@ const DynamicSearch = () => {
                 : ''
             }`}
           >
-            <IoMdSearch className="text-3xl fill-slate-400 absolute pl-2 custom-z-index-greater" />
+            <IoMdSearch className="text-3xl fill-slate-400 absolute pl-2 custom-z-index-greatest" />
           </label>
           {!eventSearchFailed &&
             !eventDeleted &&
@@ -355,7 +355,7 @@ const DynamicSearch = () => {
                   unexpectedProblem
                     ? 'bg-transparent rounded-t-xl'
                     : 'shadow-lg active:border-2 hover:shadow-md active:shadow-lg dark:bg-gray-800 rounded-xl'
-                } w-40 md:w-72 text-top max-w-96 pl-10 p-0.5 custom-z-index-great outline-none ease-in-out active:scale-y-105 transition-all duration-500`}
+                } w-40 md:w-72 text-top max-w-96 pl-10 p-0.5 custom-z-index-greater outline-none ease-in-out active:scale-y-105 transition-all duration-500`}
               />
             )}
           {!eventSearchFailed &&
@@ -363,7 +363,7 @@ const DynamicSearch = () => {
             !eventArchived &&
             !unexpectedProblem && (
               <button
-                className={`dynamic-search custom-z-index-great ml-[10px] px-3 bg-slate-50 dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:border active:bg-slate-200 active:scale-x-105 dark:active:bg-slate-800 duration-500 transition-all rounded-lg shadow-lg hover:shadow-xl text-slate-600 dark:text-slate-300`}
+                className={`dynamic-search custom-z-index-greater ml-[10px] px-3 bg-slate-50 dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:border active:bg-slate-200 active:scale-x-105 dark:active:bg-slate-800 duration-500 transition-all rounded-lg shadow-lg hover:shadow-xl text-slate-600 dark:text-slate-300`}
                 onClick={handleDynamicSearchClick}
                 type="submit"
               >
@@ -389,7 +389,7 @@ const DynamicSearch = () => {
               ? ''
               : 'pt-[26px]'
           }
-          dynamic-search overflow-x-auto flex flex-col justify-around items-center rounded-xl absolute w-[245px] max-h-[330px] text-top md:w-96 p-0.5 custom-z-index ease-in-out transition-all duration-500 albertsans outline-none`}
+          dynamic-search overflow-x-auto flex flex-col justify-around items-center rounded-xl absolute w-[245px] max-h-[330px] text-top md:w-96 p-0.5 custom-z-index-great ease-in-out transition-all duration-500 albertsans outline-none`}
         >
           {/* Code to display searched event delete and modify buttons */}
 
