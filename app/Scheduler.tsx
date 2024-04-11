@@ -153,6 +153,13 @@ const ISheduller = () => {
     return returnedEvent;
   };
 
+  // const handleEventDrop = async (
+  //   event: DragEvent,
+  //   droppedOn: Date,
+  //   updatedEvent: ProcessedEvent,
+  //   originalEvent: ProcessedEvent
+  // ): Promise<void | ProcessedEvent> => {};
+
   const handleDelete = async (deletedId: any) => {
     await deleteEventOnServer(deletedId);
 
@@ -213,10 +220,9 @@ const ISheduller = () => {
             hourFormat="24"
             onConfirm={handleConfirm}
             onDelete={handleDelete}
-            // onEventDrop={handleConfirm}
             onSelectedDateChange={refetchData}
             selectedDate={eventStart}
-            // draggable={false}
+            draggable={false}
           />
         </>
       )}

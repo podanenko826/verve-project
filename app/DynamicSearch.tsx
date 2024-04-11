@@ -79,7 +79,20 @@ const DynamicSearch = () => {
     try {
       const response = await axios.get('/api/events');
 
-      setEvents(response.data);
+      let e: Event[] = [];
+
+      if (data) {
+        for (let i = 0; i < response.data.length; i++) {
+          if (
+            response.data[i].title[0].toLowerCase() === data[0].toLowerCase()
+          ) {
+            e.push(response.data[i]);
+          }
+        }
+        setEvents(e);
+      } else {
+        setEvents(response.data);
+      }
     } catch (error) {
       console.error('Error fetching event:', error);
     }
@@ -190,26 +203,40 @@ const DynamicSearch = () => {
     if (input) setIsSearchBarEmpty(false);
     else setIsSearchBarEmpty(true);
 
-    if (input.toLowerCase() !== 'event') {
-      try {
-        const response = await axios.get('/api/events');
-        setEvents(response.data);
+    try {
+      const response = await axios.get('/api/events');
+
+      let e: Event[] = [];
+
+      if (input) {
+        setSearchOpened(true);
 
         for (let i = 0; i < response.data.length; i++) {
-          let e = response.data[i];
-
-          if (e.title === input) {
-            setSelectedEvent(e);
-            setEventTitle(e.title);
-            break;
-          } else {
-            setSelectedEvent(undefined);
-            setEventTitle('');
+          if (
+            response.data[i].title[0].toLowerCase() === input[0].toLowerCase()
+          ) {
+            e.push(response.data[i]);
           }
+          setEvents(e);
         }
-      } catch (error) {
-        return 'Error fetching event:' + error;
+      } else {
+        setSearchOpened(false);
       }
+
+      for (let i = 0; i < response.data.length; i++) {
+        let e = response.data[i];
+
+        if (e.title.toLowerCase() === input.toLowerCase()) {
+          setSelectedEvent(e);
+          setEventTitle(e.title);
+          break;
+        } else {
+          setSelectedEvent(undefined);
+          setEventTitle('');
+        }
+      }
+    } catch (error) {
+      return 'Error fetching event:' + error;
     }
   };
 
