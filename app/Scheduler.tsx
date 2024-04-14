@@ -190,6 +190,7 @@ const ISheduller = () => {
             hourFormat="24"
             onConfirm={handleConfirm}
             onDelete={handleDelete}
+            loading={!events}
             // onEventDrop={handleConfirm}
             onSelectedDateChange={refetchData}
             // selectedDate={eventStart}
@@ -223,6 +224,7 @@ const ISheduller = () => {
             onSelectedDateChange={refetchData}
             selectedDate={eventStart}
             draggable={false}
+            loading={!events}
           />
         </>
       )}

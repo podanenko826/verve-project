@@ -15,7 +15,6 @@ const createEventSchema = z.object({
   title: z.string().min(3).max(255),
   start: z.string().min(20),
   end: z.string().min(20),
-  // userId: z.number(),
 });
 
 export async function GET(response: NextResponse) {

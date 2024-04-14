@@ -119,11 +119,10 @@ const NavBar = () => {
 
   return (
     <>
-      <nav className="flex albertsans dark:bg-gray-950 justify-between border-b-[1.5px] border-zinc-200 dark:border-zinc-900 mb-10 min-w-full h-20">
+      <nav className="flex albertsans dark:bg-gray-950 justify-around border-b-[1.5px] border-zinc-200 dark:border-zinc-900 mb-10 min-w-full h-20">
         <div className="w-full pl-5 flex justify-end">
           <DynamicSearch />
         </div>
-
         <div className="w-1/2 md:w-3/5 h-full text-[30px] mr-0 md:mr-7 flex justify-end items-start md:items-cente">
           <button
             className="context-menu-button mr-7 md:mr-0 h-1/2 mt-5 px-1 rounded-lg custom-z-index-greatest justify-self-center hover:bg-slate-200 active:bg-slate-400 dark:hover:bg-slate-600 dark:active:bg-slate-400"
