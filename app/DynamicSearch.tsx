@@ -617,8 +617,8 @@ const DynamicSearch = () => {
                       }
                       className="text-xl hover:scale-110 duration-150"
                     >
-                      {pageChosen === 'allEvents' ? <GoDotFill /> : <GoDot />}
-                      {/* <GoDotFill /> */}
+                      {/* {pageChosen === 'allEvents' ? <GoDotFill /> : <GoDot />} */}
+                      <GoDotFill />
                     </button>
                     <button
                       onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
@@ -626,11 +626,12 @@ const DynamicSearch = () => {
                       }
                       className="text-xl hover:scale-110 duration-150"
                     >
-                      {pageChosen === 'nearestEvent' ? (
+                      {/* {pageChosen === 'nearestEvent' ? (
                         <GoDotFill />
                       ) : (
                         <GoDot />
-                      )}
+                      )} */}
+                      <GoDotFill />
                     </button>
                   </div>
                 )}
