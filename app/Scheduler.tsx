@@ -10,6 +10,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 
 import { IoRefresh } from 'react-icons/io5';
+import { useSession } from 'next-auth/react';
 
 const prisma = new PrismaClient();
 
@@ -36,6 +37,7 @@ const ISheduller = () => {
   const searchParams = useSearchParams();
 
   const search = searchParams.get('event_id');
+  const session = useSession();
 
   useEffect(() => {
     const findEvent = async () => {

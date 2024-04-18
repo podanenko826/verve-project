@@ -15,6 +15,7 @@ import { RiArchive2Fill } from 'react-icons/ri';
 import { GoDotFill } from 'react-icons/go';
 import { GoDot } from 'react-icons/go';
 import { IoIosSearch } from 'react-icons/io';
+import { useSession } from 'next-auth/react';
 
 enum Status {
   OPEN = 'OPEN',
@@ -355,6 +356,7 @@ const DynamicSearch = () => {
 
     setPageChosen(page);
   };
+  const session = useSession();
 
   return (
     <div>

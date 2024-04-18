@@ -145,6 +145,10 @@ const NavBar = () => {
                   <p className="text-[15px] text-slate-500 pl-6 pr-16 font-normal">
                     {session.data?.user?.email}
                   </p>
+                  <p className="text-sm pl-6 mt-2 text-slate-500">
+                    accountId: <br />
+                    {session.data.user.id}
+                  </p>
                 </div>
                 <div className="block md:hidden">
                   <button

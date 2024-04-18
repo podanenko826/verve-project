@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
+import { useSession } from 'next-auth/react';
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,10 @@ const schema = z.object({
   start: z.string().min(20).max(50),
   end: z.string().min(20).max(50),
   status: Status.default('OPEN'),
+  accountId: z.string(),
 });
+
+const session = useSession();
 
 export async function GET(
   request: NextRequest,
@@ -21,6 +25,7 @@ export async function GET(
     const event = await prisma.event.findUnique({
       where: {
         event_id: parseInt(params.id),
+        accountId: session.data?.user.id,
       },
     });
 
