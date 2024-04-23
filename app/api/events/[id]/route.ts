@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { useSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
 
 const prisma = new PrismaClient();
 
@@ -15,17 +16,17 @@ const schema = z.object({
   accountId: z.string(),
 });
 
-const session = useSession();
-
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession();
+
     const event = await prisma.event.findUnique({
       where: {
         event_id: parseInt(params.id),
-        accountId: session.data?.user.id,
+        accountId: session?.user.id,
       },
     });
 
@@ -49,6 +50,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession();
     const body = await request.json();
 
     // Check if request body is present and valid JSON
@@ -59,21 +61,28 @@ export async function PUT(
       );
     }
 
-    // Validate request body using schema
+    if (!session) {
+      return NextResponse.json(
+        { error: 'User is not authenticated' },
+        { status: 201 }
+      );
+    }
+
+    body.accountId = session.user.id;
+
     const validation = schema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json(validation.error.errors, { status: 400 });
     }
 
-    // const eventId = parseInt(params.id);
+    const eventId = parseInt(params.id);
 
-    // Check if eventId is a valid integer
-    if (isNaN(parseInt(params.id))) {
+    if (isNaN(eventId)) {
       return NextResponse.json({ error: 'Invalid event ID' }, { status: 400 });
     }
 
     const event = await prisma.event.findUnique({
-      where: { event_id: parseInt(params.id) },
+      where: { event_id: parseInt(params.id), accountId: session.user.id },
     });
 
     if (!event) {
@@ -88,6 +97,7 @@ export async function PUT(
         start: body.start,
         end: body.end,
         status: body.status,
+        accountId: body.accountId,
       },
     });
 

@@ -61,10 +61,7 @@ export async function GET(response: NextResponse) {
         return NextResponse.json(userEvents);
       }
     } else {
-      return NextResponse.json(
-        { error: 'No user events found' },
-        { status: 404 }
-      );
+      return NextResponse.json({});
     }
     // Filter events based on status
 

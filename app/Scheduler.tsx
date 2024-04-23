@@ -48,7 +48,7 @@ const ISheduller = () => {
           // searchedEvent = new Date(response.data.start);
           setEventStart(new Date(response.data.start));
         } catch (error) {
-          console.error('Error fetching event:', error);
+          console.error('Error finding event:', error);
         }
       }
     };

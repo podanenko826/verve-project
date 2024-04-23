@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
+import { getServerSession } from 'next-auth';
 
 const prisma = new PrismaClient();
 
@@ -12,21 +13,28 @@ enum Status {
 }
 
 export async function GET(response: NextResponse) {
+  const session = await getServerSession();
+
   try {
     const allEvents = await prisma.event.findMany();
-    let events = [];
 
-    for (let i = 0; i < allEvents.length; i++) {
-      if (allEvents[i].status === Status.CLOSED) {
-        events.push(allEvents[i]);
+    if (session) {
+      if (allEvents.length) {
+        const openEvents = allEvents.filter(
+          (event) => event.status !== Status.CLOSED
+        );
+
+        const userEvents = openEvents.filter(
+          (event) => event.accountId === session?.user.id
+        );
+
+        if (userEvents.length) {
+          return NextResponse.json(userEvents);
+        }
+      } else {
+        return NextResponse.json({ error: 'Event not found' }, { status: 404 });
       }
     }
-
-    if (!events) {
-      return NextResponse.json({ error: 'Event not found' }, { status: 404 });
-    }
-
-    return NextResponse.json(events);
   } catch (error) {
     console.error('Error fetching event from the database:', error);
 

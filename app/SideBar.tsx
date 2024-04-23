@@ -51,9 +51,9 @@ const SideBar = () => {
   };
 
   return (
-    <nav className="flex flex-col albertsans bg-gradient-sidebar dark:bg-gradient-sidebar-dark pb-10 w-[250px] min-h-screen space-y-10 shadow-2xl z-50 transition-all duration-300 overflow-hidden">
+    <nav className="flex flex-col albertsans bg-gradient-sidebar dark:bg-gradient-sidebar-dark pb-10 w-[220px] min-h-screen space-y-10 shadow-2xl z-50 transition-all duration-300 overflow-hidden">
       <div className="space-y-5 pt-7 flex flex-col items-center justify-between">
-        <Link className="flex text-3xl pr-20 text-white" href="/">
+        <Link className="flex text-3xl pr-20 ml-4 text-white" href="/">
           <AiFillCarryOut className="mt-0.5 pt-0.5" />
           <h1 className="albertsans font-bold hidden md:block">Verve</h1>
         </Link>
@@ -61,7 +61,7 @@ const SideBar = () => {
         <div className="w-5/6 rounded-2xl border border-zinc-400">
           <h3 className="pl-3 py-0.5 text-zinc-300 text-[15px]">Workspace</h3>
           <select
-            className="w-[200px] text-white bg-transparent outline-none pl-2 pb-1"
+            className="w-[175px] text-white bg-transparent outline-none pl-2 pb-1"
             value={selectedOption}
             onChange={handleOptionChange}
           >
@@ -79,7 +79,7 @@ const SideBar = () => {
                 currentPath === item.href
                   ? 'text-gray-200 dark:bg-blue-400 shadow-shadow-sidebar'
                   : 'text-gray-400 hover:text-gray-200'
-              } rounded-lg transition-all ml-5 w-5/6 px-4 py-1.5 font-bold flex items-center text-[16px] duration-200`}
+              } rounded-lg transition-all ml-3 w-5/6 px-4 py-1.5 font-bold flex items-center text-[16px] duration-200`}
             >
               <strong className="pr-1.5">{item.icon}</strong>
               {item.label}
