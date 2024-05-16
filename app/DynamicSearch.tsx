@@ -108,30 +108,32 @@ const DynamicSearch = () => {
   };
 
   const getNearestEvents = async () => {
-    const differences = events.map((event) =>
-      Math.abs(
-        new Date().getTime() -
-          (event.start instanceof Date ? event.start.getTime() : event.start)
-      )
-    );
-
-    events.sort((a, b) => {
-      const diffA = Math.abs(
-        new Date().getTime() -
-          (a.start instanceof Date
-            ? a.start.getTime()
-            : new Date(a.start).getTime())
+    if (events.length) {
+      const differences = events.map((event) =>
+        Math.abs(
+          new Date().getTime() -
+            (event.start instanceof Date ? event.start.getTime() : event.start)
+        )
       );
-      const diffB = Math.abs(
-        new Date().getTime() -
-          (b.start instanceof Date
-            ? b.start.getTime()
-            : new Date(b.start).getTime())
-      );
-      return diffA - diffB; // Sorting in ascending order
-    });
 
-    setNearestEvents(events.slice(0, 3));
+      events.sort((a, b) => {
+        const diffA = Math.abs(
+          new Date().getTime() -
+            (a.start instanceof Date
+              ? a.start.getTime()
+              : new Date(a.start).getTime())
+        );
+        const diffB = Math.abs(
+          new Date().getTime() -
+            (b.start instanceof Date
+              ? b.start.getTime()
+              : new Date(b.start).getTime())
+        );
+        return diffA - diffB; // Sorting in ascending order
+      });
+
+      setNearestEvents(events.slice(0, 3));
+    }
   };
 
   async function deleteEventOnServer(
@@ -287,10 +289,10 @@ const DynamicSearch = () => {
     }
   };
 
-  const handleEdit = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDetails = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    router.push('/events/edit/' + selectedEvent?.event_id);
+    router.push('/events/details/' + selectedEvent?.event_id);
   };
 
   let startDate,
@@ -474,11 +476,11 @@ const DynamicSearch = () => {
                   <div className="my-5 space-x-5">
                     <button
                       onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                        handleEdit(e)
+                        handleDetails(e)
                       }
                       className="custom-z-index-great px-3 py-3 bg-zinc-50 dark:bg-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-[4.5px] transition-all text-black dark:text-white"
                     >
-                      Edit
+                      Details
                     </button>
                     <button
                       onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
@@ -503,7 +505,8 @@ const DynamicSearch = () => {
               )}
 
               {/* Code to display all events in a search bar */}
-              {searchOpened &&
+              {events.length &&
+                searchOpened &&
                 pageChosen === 'allEvents' &&
                 !eventTitle &&
                 !eventSearchFailed && (
@@ -528,7 +531,8 @@ const DynamicSearch = () => {
                   </ul>
                 )}
 
-              {searchOpened &&
+              {events.length &&
+                searchOpened &&
                 pageChosen === 'nearestEvent' &&
                 !eventTitle &&
                 !eventSearchFailed && (

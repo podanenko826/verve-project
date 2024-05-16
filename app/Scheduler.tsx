@@ -3,7 +3,12 @@ import { Scheduler } from '@aldabil/react-scheduler';
 import { PrismaClient } from '@prisma/client';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { EventActions, ProcessedEvent } from '@aldabil/react-scheduler/types';
+import { TextField, Button, DialogActions } from '@mui/material';
+import {
+  EventActions,
+  ProcessedEvent,
+  SchedulerHelpers,
+} from '@aldabil/react-scheduler/types';
 import { useSearchParams } from 'next/navigation';
 
 import React from 'react';
@@ -23,12 +28,100 @@ enum Status {
 interface Event {
   event_id: number;
   title: string;
+  description: string;
   start: string; // Assuming DateTime is serialized as string
   end: string;
   status: Status;
 }
 
+interface CustomEditorProps {
+  scheduler: SchedulerHelpers;
+}
+
+const CustomEditor = ({ scheduler }: CustomEditorProps) => {
+  const event = scheduler?.edited;
+  console.log(scheduler);
+
+  // Make your own form/state
+  const [state, setState] = useState({
+    title: event?.title || '',
+    description: event?.description || '',
+  });
+  const [error, setError] = useState('');
+
+  const handleChange = (value: string, name: string) => {
+    setState((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+  };
+  const handleSubmit = async () => {
+    // Your own validation
+    if (state.title.length < 3) {
+      return setError('Min 3 letters');
+    }
+
+    try {
+      scheduler.loading(true);
+
+      /**Simulate remote data saving */
+      const added_updated_event = (await new Promise((res) => {
+        /**
+         * Make sure the event have 4 mandatory fields
+         * event_id: string|number
+         * title: string
+         * start: Date|string
+         * end: Date|string
+         */
+        setTimeout(() => {
+          res({
+            event_id: event?.event_id || Math.random(),
+            title: state.title,
+            start: scheduler.state.start.value,
+            end: scheduler.state.end.value,
+            description: state.description,
+          });
+        }, 3000);
+      })) as ProcessedEvent;
+
+      scheduler.onConfirm(added_updated_event, event ? 'edit' : 'create');
+      scheduler.close();
+    } finally {
+      scheduler.loading(false);
+    }
+  };
+  return (
+    <div>
+      <div className="p-4">
+        <p className="pb-4">Edit event</p>
+        <TextField
+          label="Title"
+          value={state.title}
+          onChange={(e) => handleChange(e.target.value, 'title')}
+          className="pb-2.5"
+          error={!!error}
+          helperText={error}
+          fullWidth
+        />
+        <TextField
+          label="Description"
+          value={state.description}
+          onChange={(e) => handleChange(e.target.value, 'description')}
+          fullWidth
+        />
+      </div>
+      <DialogActions>
+        <Button onClick={scheduler.close}>Cancel</Button>
+        <Button onClick={handleSubmit}>Confirm</Button>
+      </DialogActions>
+    </div>
+  );
+};
+
 const ISheduller = () => {
+  const [error, setError] = useState('');
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event>();
   const [eventStart, setEventStart] = useState<Date>();
@@ -170,7 +263,7 @@ const ISheduller = () => {
 
   return (
     <div className="max-h-min md:max-h-screen h-5/6 rounded-2xl mx-0 albertsans lg:mx-2 overflow-y-scroll">
-      {events !== null && !search && !eventStart && (
+      {events.length && !search && !eventStart && (
         <>
           <button
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => refetchData()}
@@ -179,7 +272,6 @@ const ISheduller = () => {
             <IoRefresh className="text-2xl mr-1 pb-0.5" />
             Refresh
           </button>
-
           <Scheduler
             view="day"
             events={events.map((mappedEvent) => ({
@@ -188,6 +280,7 @@ const ISheduller = () => {
               start: new Date(mappedEvent.start),
               end: new Date(mappedEvent.end),
             }))}
+            customEditor={(scheduler) => <CustomEditor scheduler={scheduler} />}
             // locale={uk}
             hourFormat="24"
             onConfirm={handleConfirm}
@@ -197,11 +290,22 @@ const ISheduller = () => {
             onSelectedDateChange={refetchData}
             // selectedDate={eventStart}
             // draggable={false}
+            viewerExtraComponent={(fields, event) => {
+              return (
+                <div className="py-2 ml-1.5">
+                  <p>
+                    {event.description
+                      ? `Description: ${event.description}`
+                      : 'No description provided'}
+                  </p>
+                </div>
+              );
+            }}
           />
         </>
       )}
 
-      {events !== null && search && eventStart && (
+      {events.length && search && eventStart && (
         <>
           <button
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => refetchData()}
@@ -227,6 +331,27 @@ const ISheduller = () => {
             selectedDate={eventStart}
             draggable={false}
             loading={!events}
+          />
+        </>
+      )}
+      {!events.length && (
+        <>
+          <button
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => refetchData()}
+            className="absolute font-sans rounded-[4.5px] hover:bg-zinc-100 dark:hover:bg-zinc-700 active:bg-zinc-300 dark:active:bg-zinc-700 duration-300 py-1.5 px-1.5 p mt-0.5 flex ml-44 custom-z-index"
+          >
+            <IoRefresh className="text-2xl mr-1 pb-0.5" />
+            Refresh
+          </button>
+
+          <Scheduler
+            view="day"
+            // locale={uk}
+            hourFormat="24"
+            onConfirm={handleConfirm}
+            onDelete={handleDelete}
+            onSelectedDateChange={refetchData}
+            draggable={false}
           />
         </>
       )}

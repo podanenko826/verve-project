@@ -13,6 +13,7 @@ enum Status {
 
 const createEventSchema = z.object({
   title: z.string().min(3).max(255),
+  description: z.string().min(3).max(255).nullable().optional(),
   start: z.string().min(20),
   end: z.string().min(20),
   accountId: z.string(),
@@ -99,13 +100,14 @@ export async function POST(request: NextRequest) {
         session.user.id = user.id;
       }
 
-      console.log(session.user.id);
+      console.log('Session: ', session.user.id);
     }
 
     const body = await request.json();
 
     body.accountId = session.user.id.toString();
     console.log(body);
+    console.log('Description: ', body.description);
 
     const validation = createEventSchema.safeParse(body);
     if (!validation.success) {
@@ -115,6 +117,7 @@ export async function POST(request: NextRequest) {
     const newEvent = await prisma.event.create({
       data: {
         title: body.title,
+        description: body.description,
         start: body.start,
         end: body.end,
         accountId: session.user.id,

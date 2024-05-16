@@ -10,6 +10,7 @@ const Status = z.enum(['OPEN', 'IN_PROGRESS', 'CLOSED']);
 
 const schema = z.object({
   title: z.string().min(3).max(255),
+  description: z.string().min(3).max(255).nullable().optional(),
   start: z.string().min(20).max(50),
   end: z.string().min(20).max(50),
   status: Status.default('OPEN'),
