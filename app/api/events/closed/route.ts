@@ -12,32 +12,57 @@ enum Status {
   CLOSED = 'CLOSED',
 }
 
-export async function GET(response: NextResponse) {
+export async function GET(request: NextRequest) {
   const session = await getServerSession();
 
+  if (!session) {
+    return NextResponse.json(
+      { error: 'User is not authenticated' },
+      { status: 401 }
+    );
+  }
+
   try {
+    if (session.user.email !== null) {
+      const user = await prisma.user.findUnique({
+        where: {
+          email: session.user.email,
+        },
+      });
+
+      if (user) {
+        session.user.id = user.id;
+      } else {
+        return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      }
+    } else {
+      return NextResponse.json(
+        { error: 'Email is not provided in session' },
+        { status: 400 }
+      );
+    }
+
     const allEvents = await prisma.event.findMany();
 
-    if (session) {
-      if (allEvents.length) {
-        const openEvents = allEvents.filter(
-          (event) => event.status !== Status.CLOSED
-        );
+    if (allEvents.length) {
+      const openEvents = allEvents.filter(
+        (event) => event.status !== Status.OPEN
+      );
 
-        const userEvents = openEvents.filter(
-          (event) => event.accountId === session?.user.id
-        );
+      const userEvents = openEvents.filter(
+        (event) => event.accountId === session.user.id
+      );
 
-        if (userEvents.length) {
-          return NextResponse.json(userEvents);
-        }
+      if (userEvents.length) {
+        return NextResponse.json(userEvents);
       } else {
-        return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+        return NextResponse.json([], { status: 200 });
       }
+    } else {
+      return NextResponse.json([], { status: 200 });
     }
   } catch (error) {
     console.error('Error fetching event from the database:', error);
-
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }

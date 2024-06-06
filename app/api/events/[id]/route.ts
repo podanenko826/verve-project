@@ -50,8 +50,28 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session = await getServerSession();
+
+  if (!session) {
+    return NextResponse.json(
+      { error: 'User is not authenticated' },
+      { status: 401 }
+    );
+  }
+
   try {
-    const session = await getServerSession();
+    if (session.user.email !== null) {
+      const user = await prisma.user.findUnique({
+        where: {
+          email: session.user.email,
+        },
+      });
+
+      if (user) {
+        session.user.id = user.id;
+      }
+    }
+
     const body = await request.json();
 
     // Check if request body is present and valid JSON
@@ -62,14 +82,8 @@ export async function PUT(
       );
     }
 
-    if (!session) {
-      return NextResponse.json(
-        { error: 'User is not authenticated' },
-        { status: 201 }
-      );
-    }
-
     body.accountId = session.user.id;
+    console.log(body);
 
     const validation = schema.safeParse(body);
     if (!validation.success) {

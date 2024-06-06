@@ -25,11 +25,9 @@ export async function GET(response: NextResponse) {
   if (!session) {
     return NextResponse.json(
       { error: 'User is not authenticated' },
-      { status: 201 }
+      { status: 401 }
     );
   }
-
-  console.log('Session: ', session);
 
   try {
     if (session.user.email !== null) {
@@ -46,9 +44,6 @@ export async function GET(response: NextResponse) {
     // Fetch all events related to the user's account
     const allEvents = await prisma.event.findMany();
 
-    console.log('User Events:', allEvents); // Log the user events for debugging
-
-    console.log(session.user.id);
     if (allEvents.length) {
       const openEvents = allEvents.filter(
         (event) => event.status !== Status.CLOSED
@@ -64,11 +59,6 @@ export async function GET(response: NextResponse) {
     } else {
       return NextResponse.json({});
     }
-    // Filter events based on status
-
-    // console.log('openEvents: ', openEvents);
-
-    // console.log('userEvents: ', userEvents);
   } catch (error) {
     console.error('Error fetching events from the database:', error);
     return NextResponse.json(
@@ -99,8 +89,6 @@ export async function POST(request: NextRequest) {
       if (user) {
         session.user.id = user.id;
       }
-
-      console.log('Session: ', session.user.id);
     }
 
     const body = await request.json();

@@ -1,8 +1,35 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import SideBar from '../SideBar';
 import NavBar from '../NavBar';
+import axios from 'axios';
 
 export default function SettingsPage() {
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [currentPassword, setCurrentPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const handleCurrentPasswordChange = (value: any) => {
+    setCurrentPassword(value);
+  };
+
+  const handleNewPasswordChange = (value: string) => {
+    setNewPassword(value);
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const response = await axios.post('/api/update-password', {
+      currentPassword,
+      newPassword,
+    });
+  };
+
   return (
     <>
       <div className="flex w-full albertsans">
@@ -19,27 +46,51 @@ export default function SettingsPage() {
               <h2 className="text-slate-500 text-[14px] p-6 border-b-[0.5px] font-normal uppercase">
                 Update password
               </h2>
-              <form
-                className="flex flex-col p-8 mt-4 space-y-5 border-b-[0.5px]"
-                action="post"
-              >
-                <input
-                  type="text"
-                  className="w-1/2 rounded-lg dark:text-black h-10 pl-3"
-                  placeholder="New password"
-                />
-                <input
-                  type="text"
-                  className="w-1/2 rounded-lg dark:text-black h-10 pl-3 border-b-[0.5px]"
-                  placeholder="Repeat new password"
-                />
-              </form>
-              <button
-                className="w-26 self-end p-3 my-3 mr-8 rounded-xl text-start bg-slate-500"
-                type="submit"
-              >
-                Update
-              </button>
+              <div className="flex">
+                <form
+                  className="flex flex-col p-8 mt-4 space-y-5 border-b-[0.5px]"
+                  action="post"
+                  onSubmit={(e) => handleSubmit(e)}
+                >
+                  <div className="flex">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      className="w-1/2 rounded-lg dark:text-black h-10 pl-3"
+                      placeholder="Current password"
+                      onChange={(e) =>
+                        handleCurrentPasswordChange(e.target.value)
+                      }
+                      value={currentPassword}
+                    />
+                    <div className="flex ml-5 items-center space-x-4">
+                      <label htmlFor="show-password">Show Password</label>
+                      <input
+                        className="w-4 h-4"
+                        type="checkbox"
+                        onChange={toggleShowPassword}
+                      />
+                    </div>
+                  </div>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    className="w-1/2 rounded-lg dark:text-black h-10 pl-3 border-b-[0.5px]"
+                    placeholder="New password"
+                    onChange={(e) => handleNewPasswordChange(e.target.value)}
+                    value={newPassword}
+                  />
+                  <button
+                    className="w-26 self-end p-3 my-3 mr-8 rounded-xl text-start bg-slate-500"
+                    type="submit"
+                  >
+                    Update
+                  </button>
+                </form>
+                {/* <form action="post" className="w-[200px] h-[100px] bg-black">
+                  <div className="flex">
+                    <input type="text" />
+                  </div>
+                </form> */}
+              </div>
             </div>
           </div>
         </div>
