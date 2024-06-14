@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth';
 import axios from 'axios';
 import { PrismaClient } from '@prisma/client';
 import { useSession } from 'next-auth/react';
+import { FaUserCircle } from 'react-icons/fa';
 
 export default async function AccountPage() {
   const prisma = new PrismaClient();
@@ -28,13 +29,17 @@ export default async function AccountPage() {
           <p className="text-3xl">Account</p>
           <div className="flex flex-col items-center justify-around mt-8 bg-white w-[450px] h-[330px] border-[1.5px] rounded-[25px]">
             <div className="flex flex-col items-center">
-              <img
-                src={currentUser?.image!}
-                referrerPolicy="no-referrer"
-                alt="pfp"
-                className="w-20 h-20 mt-6 rounded-full"
-                draggable={false}
-              />
+              {currentUser?.image ? (
+                <img
+                  src={currentUser?.image!}
+                  referrerPolicy="no-referrer"
+                  alt=""
+                  className="w-20 h-20 mt-6 rounded-full"
+                  draggable={false}
+                />
+              ) : (
+                <FaUserCircle className="text-[70px]" />
+              )}
               <p className="text-2xl mt-4">{currentUser?.name}</p>
               <p className="text-lg mt-4 text-slate-400">Account ID:</p>
               <p className="text-sm text-slate-500">{currentUser?.id}</p>

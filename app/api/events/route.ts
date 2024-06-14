@@ -39,7 +39,11 @@ export async function GET(response: NextResponse) {
 
       if (user) {
         session.user.id = user.id;
+      } else {
+        return NextResponse.json({ error: 'User not found' }, { status: 404 });
       }
+    } else {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
     // Fetch all events related to the user's account
     const allEvents = await prisma.event.findMany();

@@ -1,16 +1,27 @@
 import axios from 'axios';
+import { format } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 import React, { useEffect, useState } from 'react';
+
+enum Status {
+  OPEN = 'OPEN',
+  IN_PROGRESS = 'IN_PROGRESS',
+  CLOSED = 'CLOSED',
+}
+
+interface Event {
+  event_id: number;
+  title: string;
+  start: Date | number;
+  end: Date | number;
+  status: Status;
+}
 
 const DashboardComponent = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
 
   const currentDate = new Date();
-
-  const tomorrowDate = currentDate.setDate(currentDate.getDate() + 1);
-  const dayAfterTomorrow = currentDate.setDate(currentDate.getDate() + 2);
-  const dayAfter2Tomorrow = currentDate.setDate(currentDate.getDate() + 3);
-  const dayAfter3Tomorrow = currentDate.setDate(currentDate.getDate() + 4);
-  const dayAfter4Tomorrow = currentDate.setDate(currentDate.getDate() + 5);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -25,6 +36,21 @@ const DashboardComponent = () => {
 
     fetchEvent();
   }, []);
+
+  useEffect(() => {
+    if (events.length) {
+      const sortedEvents = [...events].sort((a, b) => {
+        const diffA = Math.abs(
+          new Date().getTime() - new Date(a.start).getTime()
+        );
+        const diffB = Math.abs(
+          new Date().getTime() - new Date(b.start).getTime()
+        );
+        return diffA - diffB;
+      });
+      setUpcomingEvents(sortedEvents.slice(0, 3));
+    }
+  }, [events]);
 
   return (
     <>
@@ -63,7 +89,24 @@ const DashboardComponent = () => {
               Upcoming events
             </h2>
 
-            <div className="flex w-2/3"></div>
+            <div className="flex flex-col-reverse w-full">
+              {upcomingEvents.map((item) => (
+                <div className="flex items-center space-x-5">
+                  <div className="flex flex-col mb-1.5 items-center justify-around w-44 h-20 bg-gradient-home-content1 rounded-2xl">
+                    <h1 className="text-gray-50">{item.title}</h1>
+                  </div>
+                  <h1>
+                    {format(new Date(item.start), 'd MMMM yyyy h:mm', {
+                      locale: enUS,
+                    })}{' '}
+                    -{' '}
+                    {format(new Date(item.end), 'd MMMM yyyy h:mm', {
+                      locale: enUS,
+                    })}
+                  </h1>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-col w-full md:w-1/2 p-6 justify-center space-y-3 rounded-[25px] border bg-white dark:bg-slate-800">

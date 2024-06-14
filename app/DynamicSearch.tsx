@@ -183,6 +183,7 @@ const DynamicSearch = () => {
       setTimeout(() => {
         setMessage('');
       }, 4200);
+      return false;
     }
 
     const updatedData = {
@@ -335,8 +336,8 @@ const DynamicSearch = () => {
         }
       }
     }
-
-    setMessage('searchFailed');
+    if (data) setMessage('searchFailed');
+    else setMessage('nameRequired');
     setTimeout(() => {
       setMessage('');
     }, 4200);
@@ -407,202 +408,201 @@ const DynamicSearch = () => {
               </button>
             )} */}
         </div>
-
-        <>
-          <div
-            className={`${
-              message !== '' || searchOpened
-                ? 'shadow-lg hover:shadow-md active:shadow-lg bg-white dark:bg-gray-800'
-                : 'bg-transparent'
-            } ${message !== '' ? 'h-[76px]' : 'pt-[26px]'}
-                dynamic-search overflow-x-auto flex flex-col justify rounded-xl items-center absolute w-[245px] h-[217px] text-top md:w-[350px] p-0.5 custom-z-index-great ease-in-out transition-all duration-500 albertsans outline-none`}
-          >
-            {/* Max height 330px */}
-            {/* Code to display searched event delete and modify buttons */}
-
-            {searchOpened && selectedEvent && message === '' ? (
-              <>
-                <div className="flex flex-col items-center mt-4 w-full">
-                  <p>{selectedEvent ? eventTitle : ''}</p>
-                  {startDate === endDate ? (
-                    <p className="text-sm text-center px-10">
-                      {startDate}, {startTime} - {endTime}
-                    </p>
-                  ) : (
-                    <p className="text-[16px] text-center px-6 lg:px-4">
-                      From {startDate} to {endDate}, <br />
-                      {startTime} - {endTime}
-                    </p>
-                  )}
-                </div>
-                <div className="my-5 space-x-5">
-                  <button
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                      handleDetails(e)
-                    }
-                    className="custom-z-index-great px-3 py-3 bg-zinc-50 dark:bg-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-[4.5px] transition-all text-black dark:text-white"
-                  >
-                    Details
-                  </button>
-                  <button
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                      deleteEventOnServer(e, selectedEvent.event_id)
-                    }
-                    className="custom-z-index-great px-3 py-3 bg-zinc-50 dark:bg-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-[4.5px] transition-all text-black dark:text-white"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                      archiveEventOnServer(e, selectedEvent.event_id)
-                    }
-                    className="custom-z-index-great px-3 py-3 bg-zinc-50 dark:bg-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-[4.5px] transition-all text-black dark:text-white"
-                  >
-                    Archive
-                  </button>
-                </div>
-              </>
-            ) : (
-              ''
-            )}
-
-            {/* Code to display all events in a search bar */}
-            {events.length &&
-            searchOpened &&
-            pageChosen === 'allEvents' &&
-            !eventTitle &&
-            message === '' ? (
-              <ul className="mt-[2px] ease-in-out">
-                <h1 className="font-bold py-2 w-full text-center">
-                  {!events[0] && data && 'Event does not exist'}
-                  {data !== '' && events[0] !== null ? '' : 'All events'}
-                </h1>
-                {events.map((item) => (
-                  <li key={item.event_id}>
-                    <button
-                      onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                        handleEventChoose(e, item.event_id)
-                      }
-                      key={item.event_id}
-                      className="dynamic-search ease-in-out w-[250px] md:w-[346px] overflow-scroll text-center hover:bg-slate-100 dark:hover:bg-gray-700 font-normal py-[10px] border-y border-zinc-100 dark:border-zinc-700 duration-300 transition-all"
-                    >
-                      {item.title}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              ''
-            )}
-
-            {events.length &&
-            searchOpened &&
-            pageChosen === 'nearestEvent' &&
-            !eventTitle &&
-            message === '' ? (
-              <ul className="items-center smt-[2px]">
-                <h1 className="font-bold py-2 w-full text-center">
-                  Nearest events
-                </h1>
-                {nearestEvents.map((item) => (
-                  <li key={item.event_id}>
-                    <button
-                      onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                        handleEventChoose(e, item.event_id)
-                      }
-                      className="dynamic-search w-[250px] md:w-[346px] overflow-scroll text-center hover:bg-slate-100 dark:hover:bg-gray-700 font-normal py-[10px] border-y border-zinc-100 dark:border-zinc-700 duration-300 transition-all"
-                    >
-                      {item.title} -{' '}
-                      {format(new Date(item.start), 'd MMMM yyyy h:mm', {
-                        locale: enUS,
-                      })}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              ''
-            )}
-
-            {/* Code to display various errors in a search bar */}
-
-            {message !== '' && (
-              <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
-                {data && message === 'searchFailed' ? (
-                  <>
-                    <ImCross className="text-red-600 text-xl" />
-                    <h1 className="font-medium">Event does not exist</h1>
-                  </>
-                ) : (
-                  <>
-                    <PiWarningOctagonFill className="text-yellow-500 text-2xl" />
-                    <h1 className="font-medium">Event name is required</h1>
-                  </>
-                )}
-              </div>
-            )}
-
-            {message === 'deleted' && (
-              <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
-                <MdDelete className="text-red-400 text-2xl" />
-                <h1 className="font-medium">Event deleted successfully</h1>
-              </div>
-            )}
-
-            {message === 'archived' && (
-              <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
-                <RiArchive2Fill className="text-slate-400 text-xl" />
-                <h1 className="font-medium">Event archived successfully</h1>
-              </div>
-            )}
-
-            {message === 'unexpected' && (
-              <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
-                <ImCross className="text-red-600 text-xl" />
-                <h1 className="font-medium">Something went wrong</h1>
-              </div>
-            )}
-          </div>
-          {searchOpened && (
+        {searchOpened && (
+          <>
             <div
               className={`${
-                message === ''
+                message !== '' || searchOpened
                   ? 'shadow-lg hover:shadow-md active:shadow-lg bg-white dark:bg-gray-800'
-                  : ' bg-transparent'
-              }
-                dynamic-search overflow-x-auto flex flex-col justify-around items-center rounded-b-xl mt-52 absolute w-[245px] text-top md:w-[350px] p-0.5 custom-z-index-great ease-in-out transition-all duration-500 albertsans outline-none`}
+                  : 'bg-transparent'
+              } ${message !== '' ? 'h-[76px]' : 'pt-[26px]'}
+                    dynamic-search overflow-x-auto flex flex-col justify rounded-xl items-center absolute w-[245px] h-[217px] text-top md:w-[350px] p-0.5 custom-z-index-great ease-in-out transition-all duration-500 albertsans outline-none`}
             >
-              {searchOpened && message === '' ? (
-                <div className="flex justify-center space-x-1 py-2">
-                  <button
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                      handlePageChange(e, 'allEvents')
-                    }
-                    className="text-xl hover:scale-110 duration-150"
-                  >
-                    {/* {pageChosen === 'allEvents' ? <GoDotFill /> : <GoDot />} */}
-                    <GoDotFill />
-                  </button>
-                  <button
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                      handlePageChange(e, 'nearestEvent')
-                    }
-                    className="text-xl hover:scale-110 duration-150"
-                  >
-                    {/* {pageChosen === 'nearestEvent' ? (
-                        <GoDotFill />
-                      ) : (
-                        <GoDot />
-                      )} */}
-                    <GoDotFill />
-                  </button>
-                </div>
+              {/* Max height 330px */}
+              {/* Code to display searched event delete and modify buttons */}
+
+              {searchOpened && selectedEvent && message === '' ? (
+                <>
+                  <div className="flex flex-col items-center mt-4 w-full">
+                    <p>{selectedEvent ? eventTitle : ''}</p>
+                    {startDate === endDate ? (
+                      <p className="text-sm text-center px-10">
+                        {startDate}, {startTime} - {endTime}
+                      </p>
+                    ) : (
+                      <p className="text-[16px] text-center px-6 lg:px-4">
+                        From {startDate} to {endDate}, <br />
+                        {startTime} - {endTime}
+                      </p>
+                    )}
+                  </div>
+                  <div className="my-5 space-x-5">
+                    <button
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                        handleDetails(e)
+                      }
+                      className="custom-z-index-great px-3 py-3 bg-zinc-50 dark:bg-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-[4.5px] transition-all text-black dark:text-white"
+                    >
+                      Details
+                    </button>
+                    <button
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                        deleteEventOnServer(e, selectedEvent.event_id)
+                      }
+                      className="custom-z-index-great px-3 py-3 bg-zinc-50 dark:bg-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-[4.5px] transition-all text-black dark:text-white"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                        archiveEventOnServer(e, selectedEvent.event_id)
+                      }
+                      className="custom-z-index-great px-3 py-3 bg-zinc-50 dark:bg-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-[4.5px] transition-all text-black dark:text-white"
+                    >
+                      Archive
+                    </button>
+                  </div>
+                </>
               ) : (
                 ''
               )}
+
+              {/* Code to display all events in a search bar */}
+              {events.length &&
+              searchOpened &&
+              pageChosen === 'allEvents' &&
+              !eventTitle &&
+              message === '' ? (
+                <ul className="mt-[2px] ease-in-out">
+                  <h1 className="font-bold py-2 w-full text-center">
+                    {!events[0] && data && 'Event does not exist'}
+                    {data !== '' && events[0] !== null ? '' : 'All events'}
+                  </h1>
+                  {events.map((item) => (
+                    <li key={item.event_id}>
+                      <button
+                        onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                          handleEventChoose(e, item.event_id)
+                        }
+                        key={item.event_id}
+                        className="dynamic-search ease-in-out w-[250px] md:w-[346px] overflow-scroll text-center hover:bg-slate-100 dark:hover:bg-gray-700 font-normal py-[10px] border-y border-zinc-100 dark:border-zinc-700 duration-300 transition-all"
+                      >
+                        {item.title}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                ''
+              )}
+
+              {events.length &&
+              searchOpened &&
+              pageChosen === 'nearestEvent' &&
+              !eventTitle &&
+              message === '' ? (
+                <ul className="items-center smt-[2px]">
+                  <h1 className="font-bold py-2 w-full text-center">
+                    Nearest events
+                  </h1>
+                  {nearestEvents.map((item) => (
+                    <li key={item.event_id}>
+                      <button
+                        onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                          handleEventChoose(e, item.event_id)
+                        }
+                        className="dynamic-search w-[250px] md:w-[346px] overflow-scroll text-center hover:bg-slate-100 dark:hover:bg-gray-700 font-normal py-[10px] border-y border-zinc-100 dark:border-zinc-700 duration-300 transition-all"
+                      >
+                        {item.title} -{' '}
+                        {format(new Date(item.start), 'd MMMM yyyy h:mm', {
+                          locale: enUS,
+                        })}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                ''
+              )}
+
+              {/* Code to display various errors in a search bar */}
+
+              {data && message === 'searchFailed' && (
+                <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
+                  <ImCross className="text-red-600 text-xl" />
+                  <h1 className="font-medium">Event does not exist</h1>
+                </div>
+              )}
+
+              {!data && message === 'nameRequired' && (
+                <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
+                  <PiWarningOctagonFill className="text-yellow-500 text-2xl" />
+                  <h1 className="font-medium">Event name is required</h1>
+                </div>
+              )}
+
+              {message === 'deleted' && (
+                <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
+                  <MdDelete className="text-red-400 text-2xl" />
+                  <h1 className="font-medium">Event deleted successfully</h1>
+                </div>
+              )}
+
+              {message === 'archived' && (
+                <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
+                  <RiArchive2Fill className="text-slate-400 text-xl" />
+                  <h1 className="font-medium">Event archived successfully</h1>
+                </div>
+              )}
+
+              {message === 'unexpected' && (
+                <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
+                  <ImCross className="text-red-600 text-xl" />
+                  <h1 className="font-medium">Something went wrong</h1>
+                </div>
+              )}
             </div>
-          )}
-        </>
+            {searchOpened && (
+              <div
+                className={`${
+                  message === ''
+                    ? 'shadow-lg hover:shadow-md active:shadow-lg bg-white dark:bg-gray-800'
+                    : ' bg-transparent'
+                }
+                    dynamic-search overflow-x-auto flex flex-col justify-around items-center rounded-b-xl mt-52 absolute w-[245px] text-top md:w-[350px] p-0.5 custom-z-index-great ease-in-out transition-all duration-500 albertsans outline-none`}
+              >
+                {searchOpened && message === '' ? (
+                  <div className="flex justify-center space-x-1 py-2">
+                    <button
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                        handlePageChange(e, 'allEvents')
+                      }
+                      className="text-xl hover:scale-110 duration-150"
+                    >
+                      {/* {pageChosen === 'allEvents' ? <GoDotFill /> : <GoDot />} */}
+                      <GoDotFill />
+                    </button>
+                    <button
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                        handlePageChange(e, 'nearestEvent')
+                      }
+                      className="text-xl hover:scale-110 duration-150"
+                    >
+                      {/* {pageChosen === 'nearestEvent' ? (
+                            <GoDotFill />
+                          ) : (
+                            <GoDot />
+                          )} */}
+                      <GoDotFill />
+                    </button>
+                  </div>
+                ) : (
+                  ''
+                )}
+              </div>
+            )}
+          </>
+        )}
       </form>
     </div>
   );
