@@ -27,7 +27,7 @@ export default async function AccountPage() {
         <div className="pl-6 flex-col w-full">
           <NavBar />
           <p className="text-3xl">Account</p>
-          <div className="flex flex-col items-center justify-around mt-8 bg-white w-[450px] h-[330px] border-[1.5px] rounded-[25px]">
+          <div className="flex flex-col items-center justify-around mt-8 bg-white w-[450px] border-[1.5px] rounded-[25px]">
             <div className="flex flex-col items-center">
               {currentUser?.image ? (
                 <img
@@ -44,8 +44,8 @@ export default async function AccountPage() {
               <p className="text-lg mt-4 text-slate-400">Account ID:</p>
               <p className="text-sm text-slate-500">{currentUser?.id}</p>
             </div>
-            <div className="flex justify-center border-t-[1.5px] w-full pt-4">
-              <button className="text-blue-500 active:text-blue-300 active:border-blue-300 border-blue-500 hover:border-b-[0.5px] duration-100 transition-all">
+            <div className="flex justify-center border-t-[1.5px] w-full mt-5 overflow-hidden">
+              <button className="w-full py-5 rounded-b-[25px] text-blue-500 active:text-blue-300 hover:bg-gray-50 duration-100 transition-all">
                 Upload picture
               </button>
               <input type="file" className="upload-picture hidden" />

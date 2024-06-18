@@ -198,7 +198,7 @@ const ISheduller = () => {
               start: new Date(mappedEvent.start),
               end: new Date(mappedEvent.end),
             }))}
-            resources={RESOURCES}
+            // resources={RESOURCES}
             // locale={uk}
             hourFormat="24"
             onConfirm={handleConfirm}
@@ -221,54 +221,54 @@ const ISheduller = () => {
             //     </div>
             //   );
             // }}
-            resourceFields={{
-              idField: 'admin_id',
-              textField: 'title',
-              subTextField: 'mobile',
-              avatarField: 'title',
-              colorField: 'color',
-            }}
-            fields={[
-              {
-                name: 'admin_id',
-                type: 'select',
-                default: RESOURCES[0].admin_id,
-                options: RESOURCES.map((res) => {
-                  return {
-                    id: res.admin_id,
-                    text: `${res.title} (${res.mobile})`,
-                    value: res.admin_id, //Should match "name" property
-                  };
-                }),
-                config: { label: 'Assignee', required: true },
-              },
-            ]}
-            viewerExtraComponent={(fields, event) => {
-              return (
-                <div>
-                  {fields.map((field, i) => {
-                    if (field.name === 'admin_id') {
-                      const admin = field.options?.find(
-                        (fe) => fe.id === event.admin_id
-                      );
-                      return (
-                        <Typography
-                          key={i}
-                          style={{ display: 'flex', alignItems: 'center' }}
-                          color="textSecondary"
-                          variant="caption"
-                          noWrap
-                        >
-                          <PersonRoundedIcon /> {admin!.text}
-                        </Typography>
-                      );
-                    } else {
-                      return '';
-                    }
-                  })}
-                </div>
-              );
-            }}
+            // resourceFields={{
+            //   idField: 'admin_id',
+            //   textField: 'title',
+            //   subTextField: 'mobile',
+            //   avatarField: 'title',
+            //   colorField: 'color',
+            // }}
+            // fields={[
+            //   {
+            //     name: 'admin_id',
+            //     type: 'select',
+            //     default: RESOURCES[0].admin_id,
+            //     options: RESOURCES.map((res) => {
+            //       return {
+            //         id: res.admin_id,
+            //         text: `${res.title} (${res.mobile})`,
+            //         value: res.admin_id, //Should match "name" property
+            //       };
+            //     }),
+            //     config: { label: 'Assignee', required: true },
+            //   },
+            // ]}
+            // viewerExtraComponent={(fields, event) => {
+            //   return (
+            //     <div>
+            //       {fields.map((field, i) => {
+            //         if (field.name === 'admin_id') {
+            //           const admin = field.options?.find(
+            //             (fe) => fe.id === event.admin_id
+            //           );
+            //           return (
+            //             <Typography
+            //               key={i}
+            //               style={{ display: 'flex', alignItems: 'center' }}
+            //               color="textSecondary"
+            //               variant="caption"
+            //               noWrap
+            //             >
+            //               <PersonRoundedIcon /> {admin!.text}
+            //             </Typography>
+            //           );
+            //         } else {
+            //           return '';
+            //         }
+            //       })}
+            //     </div>
+            //   );
+            // }}
           />
         </>
       ) : (
