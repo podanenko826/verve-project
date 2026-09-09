@@ -99,10 +99,14 @@ html {
   animation: dynamicReverse 0.5s forwards;
 }
 
-/* .dynamic-search {
-  height: 10rem;
-  width: 20rem;
-} */
+.dynamic-search,
+.context-menu {
+  /* height: 10rem;
+  width: 20rem; */
+
+  scrollbar-width: none;
+}
+
 .custom-z-index {
   z-index: 500;
 }
