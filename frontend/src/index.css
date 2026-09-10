@@ -1,0 +1,218 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    @font-face {
+        font-family: 'albert_sans';
+        src:
+            url('./fonts/albertsans-regular-webfont.woff2') format('woff2'),
+            url('./fonts/albertsans-regular-webfont.woff') format('woff');
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'albert_sans';
+        src:
+            url('./fonts/albertsans-bold-webfont.woff2') format('woff2'),
+            url('./fonts/albertsans-bold-webfont.woff') format('woff');
+        font-weight: 700;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'jtolifer';
+        src:
+            url('./fonts/jtolifer-semibold-webfont.woff2') format('woff2'),
+            url('./fonts/jtolifer-semibold-webfont.woff') format('woff');
+        font-weight: 600;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'paytone_one';
+        src:
+            url('./fonts/paytoneone-regular-webfont.woff2') format('woff2'),
+            url('./fonts/paytoneone-regular-webfont.woff') format('woff');
+        font-weight: 400;
+        font-style: normal;
+    }
+}
+.albertsans {
+    font-family: 'albert_sans', arial, system-ui;
+}
+.jtolifer {
+    font-family: 'jtolifer', arial, system-ui;
+}
+.paytoneone {
+    font-family: 'paytone_one', arial, system-ui;
+}
+
+:root {
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        Roboto,
+        Oxygen,
+        Ubuntu,
+        Cantarell,
+        'Open Sans',
+        'Helvetica Neue',
+        sans-serif;
+    --foreground-rgb: 0, 0, 0;
+    /* --background-start-rgb: 214, 219, 220; */
+    --background-start-rgb: 245, 245, 245;
+    --background-end-rgb: 255, 255, 255;
+}
+
+@keyframes dynamic {
+    0% {
+        width: 24rem;
+        height: 30px;
+    }
+    100% {
+        height: 10rem;
+    }
+}
+@keyframes dynamicReverse {
+    0% {
+        height: 10rem;
+        width: 24rem;
+    }
+    100% {
+        height: 30px;
+    }
+}
+
+body,
+html {
+    width: 100%;
+    height: 100%;
+
+    color: rgb(var(--foreground-rgb));
+    background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+}
+
+.dynamic-search-event-actions {
+    height: 30px;
+    width: 24rem;
+    /* transition: 0.3s ease-out; */
+    animation: dynamic 0.5s forwards;
+}
+.dynamic-search-event-actions-reverse {
+    height: 30px;
+    width: 24rem;
+    animation: dynamicReverse 0.5s forwards;
+}
+
+.dynamic-search,
+.context-menu {
+    /* height: 10rem;
+  width: 20rem; */
+
+    scrollbar-width: none;
+}
+
+.custom-z-index {
+    z-index: 500;
+}
+
+.custom-z-index-great {
+    z-index: 600;
+}
+
+.custom-z-index-greater {
+    z-index: 700;
+}
+
+.custom-z-index-greatest {
+    z-index: 800;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --foreground-rgb: 255, 255, 255;
+        --background-start-rgb: 0, 0, 0;
+        --background-end-rgb: 0, 0, 0;
+    }
+    /* Styles for tool bar */
+    .css-1419abu-MuiPaper-root,
+    .css-1d8d7kz-MuiPaper-root {
+        --tw-bg-opacity: 1;
+        background-color: rgb(17 24 39 / var(--tw-bg-opacity)) !important;
+    }
+    /* Styles for events shape */
+    .css-10d1a0h-MuiButtonBase-root {
+        --tw-bg-opacity: 1;
+        background-color: rgb(23 37 84 / var(--tw-bg-opacity)) !important;
+    }
+    /* Styles for the whole Scheduler background */
+    .rs__cell,
+    .rs__header,
+    .rs__today_cell {
+        --tw-bg-opacity: 1;
+        background-color: rgb(17 24 39 / var(--tw-bg-opacity)) !important;
+        border-color: rgb(30 41 59 / var(--tw-bg-opacity)) !important;
+    }
+
+    /* Styles for borders around Scheduler backgrounds */
+    .css-1gyej37,
+    .css-1d1h06e,
+    .css-l3bzu8,
+    .css-ncbr6b,
+    .css-s6u7kg,
+    .css-ess3ih,
+    .css-lap9uk,
+    .css-1m6kv8o {
+        --tw-bg-opacity: 1;
+        border-color: rgb(30 41 59 / var(--tw-bg-opacity)) !important;
+    }
+    /* Styles for numbers in calendar */
+    .css-1gqyz35-MuiTypography-root {
+        color: white;
+    }
+
+    /* Styles for secondary text */
+    .css-83ijpv-MuiTypography-root {
+        color: whitesmoke;
+    }
+    /* Styles for Month / Week / Day buttons label and arrows around current date  */
+    .css-i4bv87-MuiSvgIcon-root,
+    .css-1y942vo-MuiButtonBase-root-MuiButton-root {
+        color: darkgrey;
+    }
+    /* Styles for box when event clicked (bottom one) */
+    .MuiBox-root,
+    .css-s22wio {
+        --tw-bg-opacity: 1;
+        background-color: rgb(30 58 138 / var(--tw-bg-opacity));
+    }
+
+    /* Styles for box when event clicked (lower one) */
+    .css-s22wio {
+        --tw-bg-opacity: 1;
+        background-color: rgb(23 37 84 / var(--tw-bg-opacity));
+    }
+
+    /* Styles for close button in a box when event clicked */
+
+    .css-1db085k-MuiSvgIcon-root {
+        color: darkgray;
+    }
+
+    /* Styles for an edit event box */
+
+    .css-12rl710-MuiPaper-root-MuiDialog-paper,
+    .css-m9glnp-MuiPaper-root-MuiDialog-paper {
+        background-color: darkgray;
+        border-radius: 30px;
+    }
+}
+
+.css-1gyej37 {
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
