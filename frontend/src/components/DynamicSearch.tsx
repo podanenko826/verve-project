@@ -1,62 +1,58 @@
-import React, { useEffect, useState } from 'react';
-import { IoMdSearch } from 'react-icons/io';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { enUS } from 'date-fns/locale';
-import { format } from 'date-fns';
-import type { ProcessedEvent } from '@aldabil/react-scheduler/types';
+import React, { useEffect, useState, useMemo } from "react";
+import { IoMdSearch } from "react-icons/io";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { enUS } from "date-fns/locale";
+import { format } from "date-fns";
+import type { ProcessedEvent } from "@aldabil/react-scheduler/types";
 
-import { ImCross } from 'react-icons/im';
-import { PiWarningOctagonFill } from 'react-icons/pi';
-import { MdDelete } from 'react-icons/md';
-import { RiArchive2Fill } from 'react-icons/ri';
-import { GoDotFill } from 'react-icons/go';
+import { ImCross } from "react-icons/im";
+import { PiWarningOctagonFill } from "react-icons/pi";
+import {
+    MdDelete,
+    MdInfoOutline,
+    MdCheckCircle,
+    MdRadioButtonUnchecked,
+} from "react-icons/md";
+import { RiArchive2Fill } from "react-icons/ri";
 // import { useSession } from 'next-auth/react';
 
-const Status = { OPEN: 'OPEN', IN_PROGRESS: 'IN_PROGRESS', CLOSED: 'CLOSED' } as const;
-type Status = typeof Status[keyof typeof Status];
-
-interface Event {
-    event_id: number;
-    title: string;
-    start: Date | number;
-    end: Date | number;
-    status: Status;
-}
+import { Status } from "../types";
+import type { Event } from "../types";
 
 const DynamicSearch = () => {
-    const [data, setData] = useState('');
+    const [data, setData] = useState("");
     const [selectedEvent, setSelectedEvent] = useState<Event>();
-    const [nearestEvents, setNearestEvents] = useState<Event[]>([]);
-    const [eventTitle, setEventTitle] = useState('');
-    
-    const [pageChosen, setPageChosen] = useState<string>('allEvents');
+    // removed nearestEvents state
+    const [eventTitle, setEventTitle] = useState("");
+
+    const [pageChosen, setPageChosen] = useState<string>("allEvents");
     const [events, setEvents] = useState<Event[]>([]);
     // const [eventSearchFailed, setEventSearchFailed] = useState<boolean>(false);
     // const [eventDeleted, setEventDeleted] = useState<boolean>(false);
     // const [eventArchived, setEventArchived] = useState<boolean>(false);
     // const [unexpectedProblem, setUnexpectedProblem] = useState<boolean>(false);
-    const [message, setMessage] = useState<string>('');
+    const [message, setMessage] = useState<string>("");
 
     const [searchOpened, setSearchOpened] = useState<boolean>(false);
-
-    
 
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                const response = await axios.get('/api/events');
+                const response = await axios.get("/api/events");
                 if (!Array.isArray(response.data)) {
                     setEvents([]);
                     return;
                 }
 
                 setEvents(response.data);
-                getNearestEvents();
             } catch (error) {
-                console.error('Error fetching event:', error);
+                console.error(
+                    "Error fetching event:",
+                    axios.isAxiosError(error) ? error.response?.data : error,
+                );
             }
         };
 
@@ -67,82 +63,88 @@ const DynamicSearch = () => {
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as HTMLElement;
             // Check if the click occurred outside of the context menu
-            if (!target.closest('.dynamic-search')) {
-                setSearchOpened(false);
+            if (!target.closest(".dynamic-search")) {
+                if (message === "") {
+                    setSearchOpened(false);
+                }
             }
         };
 
-        document.addEventListener('click', handleClickOutside);
+        document.addEventListener("click", handleClickOutside);
 
         return () => {
-            document.removeEventListener('click', handleClickOutside);
+            document.removeEventListener("click", handleClickOutside);
         };
-    }, []);
+    }, [message]);
 
-    const refetchData = async () => {
+    const refetchData = async (overrideData?: string) => {
         try {
-            const response = await axios.get('/api/events');
+            const response = await axios.get("/api/events");
             if (!Array.isArray(response.data)) {
                 setEvents([]);
                 return;
             }
 
-            console.log('refetching');
+            console.log("refetching");
 
-            getNearestEvents();
-            let e: Event[] = [];
-
-            if (data) {
-                for (let i = 0; i < response.data.length; i++) {
-                    if (
-                        response.data[i].title[0].toLowerCase() === data[0].toLowerCase()
-                    ) {
-                        e.push(response.data[i]);
-                    }
-                }
-                setEvents(e);
+            const currentData =
+                overrideData !== undefined ? overrideData : data;
+            if (currentData) {
+                const searchLower = currentData.toLowerCase();
+                const filteredEvents = response.data.filter((event: Event) =>
+                    event.title
+                        .toLowerCase()
+                        .split(/\s+/)
+                        .some((word: string) => word.startsWith(searchLower)),
+                );
+                setEvents(filteredEvents);
             } else {
                 setEvents(response.data);
             }
         } catch (error) {
-            console.error('Error fetching event:', error);
+            console.error("Error fetching event:", error);
         }
     };
 
-    const getNearestEvents = async () => {
+    const nearestEvents = useMemo(() => {
         if (Array.isArray(events) && events.length) {
-            
+            const now = new Date().getTime();
 
-            events.sort((a, b) => {
-                const diffA = Math.abs(
-                    new Date().getTime() -
-                    (a.start instanceof Date
-                        ? a.start.getTime()
-                        : new Date(a.start).getTime())
-                );
-                const diffB = Math.abs(
-                    new Date().getTime() -
-                    (b.start instanceof Date
-                        ? b.start.getTime()
-                        : new Date(b.start).getTime())
-                );
-                return diffA - diffB; // Sorting in ascending order
+            const validEvents = events.filter((e) => {
+                const endDate =
+                    e.end instanceof Date
+                        ? e.end.getTime()
+                        : new Date(e.end).getTime();
+                return endDate >= now; // hide events that are past their end date
             });
 
-            setNearestEvents(events.slice(0, 3));
+            validEvents.sort((a, b) => {
+                const startA =
+                    a.start instanceof Date
+                        ? a.start.getTime()
+                        : new Date(a.start).getTime();
+                const startB =
+                    b.start instanceof Date
+                        ? b.start.getTime()
+                        : new Date(b.start).getTime();
+                return startB - startA; // descending order
+            });
+
+            return validEvents;
         }
-    };
+        return [];
+    }, [events]);
 
     async function deleteEventOnServer(
         event: React.MouseEvent<HTMLButtonElement>,
-        deletedId: any
+        deletedId: number,
     ) {
         event.preventDefault();
 
         if (!deletedId) {
-            setMessage('unexpected');
+            setMessage("unexpected");
             setTimeout(() => {
-                setMessage('');
+                setMessage("");
             }, 4200);
             return false;
         }
@@ -151,66 +153,78 @@ const DynamicSearch = () => {
             const response = await axios.delete(`/api/events/${deletedId}`);
 
             if (response.status === 200) {
-                setMessage('deleted');
+                setMessage("deleted");
                 setTimeout(() => {
-                    setMessage('');
+                    setMessage("");
                 }, 4200);
-                setData('');
+                setData("");
                 setSelectedEvent(undefined);
+                setEventTitle("");
+                refetchData("");
+                window.dispatchEvent(new Event("refreshCalendar"));
                 return true; // Event deleted successfully
             } else {
-                console.error('Unexpected response status:', response.status);
+                console.error("Unexpected response status:", response.status);
                 return false; // Unexpected response status
             }
         } catch (error) {
-            console.error('Error deleting event:', error);
+            console.error("Error deleting event:", error);
             throw error; // Propagate the error or handle it as needed
         }
     }
 
     async function archiveEventOnServer(
         event: React.MouseEvent<HTMLButtonElement>,
-        archivedId: any
+        archivedId: number,
     ) {
         event.preventDefault();
 
         if (!archivedId) {
-            setMessage('unexpected');
+            setMessage("unexpected");
             setTimeout(() => {
-                setMessage('');
+                setMessage("");
             }, 4200);
+
             return false;
         }
 
         const updatedData = {
             ...selectedEvent,
             status:
-                selectedEvent!.status === Status.OPEN ? Status.CLOSED : Status.OPEN,
+                selectedEvent!.status === Status.ARCHIVED
+                    ? Status.OPEN
+                    : Status.ARCHIVED,
         };
 
         // setSelectedEvent(updatedData);
 
         try {
             console.log(updatedData);
-            const updatedEvent = await updateEventOnServer(archivedId, updatedData);
+            const updatedEvent = await updateEventOnServer(
+                archivedId,
+                updatedData,
+            );
 
-            setMessage('archived');
+            setMessage("archived");
             setTimeout(() => {
-                setMessage('');
+                setMessage("");
             }, 4200);
 
-            setData('');
+            setData("");
             setSelectedEvent(undefined);
+            setEventTitle("");
+            refetchData("");
+            window.dispatchEvent(new Event("refreshCalendar"));
 
-            console.log('Updated event on server:', updatedEvent);
+            console.log("Updated event on server:", updatedEvent);
         } catch (error) {
-            console.error('Error archiving event:', error);
+            console.error("Error archiving event:", error);
         }
     }
 
     const updateEventOnServer = async (
         updatedId: number,
-        data: any
+        data: Partial<Event>,
     ): Promise<ProcessedEvent | undefined> => {
         try {
             const response = await axios.put(`/api/events/${updatedId}`, data);
@@ -218,71 +232,88 @@ const DynamicSearch = () => {
             if (response.status === 200) {
                 return response.data as ProcessedEvent;
             } else {
-                console.error('Unexpected response status:', response.status);
+                console.error("Unexpected response status:", response.status);
                 return undefined;
             }
         } catch (error) {
-            console.error('Error updating event:', error);
+            console.error("Error updating event:", error);
             throw error;
+        }
+    };
+
+    const toggleEventStatus = async (
+        e: React.MouseEvent<HTMLButtonElement>,
+        event: Event,
+    ) => {
+        e.preventDefault();
+        const updatedData = {
+            ...event,
+            status:
+                event.status === Status.CLOSED ? Status.OPEN : Status.CLOSED,
+        };
+        try {
+            await updateEventOnServer(event.id, updatedData);
+            setSelectedEvent(updatedData as Event);
+            refetchData("");
+            window.dispatchEvent(new Event("refreshCalendar"));
+        } catch (error) {
+            console.error("Error toggling event status:", error);
         }
     };
 
     const handleInput = async (input: string) => {
         setData(input);
 
-        
-
-        getNearestEvents();
-
         try {
-            const response = await axios.get('/api/events');
+            if (!input) {
+                setSearchOpened(true);
+                setSelectedEvent(undefined);
+                setEventTitle("");
+                refetchData("");
+                return;
+            }
+
+            const response = await axios.get("/api/events");
             if (!Array.isArray(response.data)) {
                 setEvents([]);
                 return;
             }
 
-            let e: Event[] = [];
+            setSearchOpened(true);
 
-            if (input) {
-                setSearchOpened(true);
+            const searchLower = input.toLowerCase();
+            const filteredEvents = response.data.filter((event: Event) =>
+                event.title
+                    .toLowerCase()
+                    .split(/\s+/)
+                    .some((word: string) => word.startsWith(searchLower)),
+            );
+            setEvents(filteredEvents);
 
-                for (let i = 0; i < response.data.length; i++) {
-                    if (
-                        response.data[i].title[0].toLowerCase() === input[0].toLowerCase()
-                    ) {
-                        e.push(response.data[i]);
-                    }
-                    setEvents(e);
-                }
+            const exactMatch = response.data.find(
+                (e: Event) => e.title.toLowerCase() === searchLower,
+            );
+
+            if (exactMatch) {
+                setSelectedEvent(exactMatch);
+                setEventTitle(exactMatch.title);
             } else {
-                setSearchOpened(false);
-            }
-
-            for (let i = 0; i < response.data.length; i++) {
-                let e = response.data[i];
-
-                if (e.title.toLowerCase() === input.toLowerCase()) {
-                    setSelectedEvent(e);
-                    setEventTitle(e.title);
-                    break;
-                } else {
-                    setSelectedEvent(undefined);
-                    setEventTitle('');
-                }
+                setSelectedEvent(undefined);
+                setEventTitle("");
             }
         } catch (error) {
-            return 'Error fetching event:' + error;
+            console.error("Error fetching event:", error);
         }
     };
 
     const handleEventChoose = (
         event: React.MouseEvent<HTMLButtonElement>,
-        selectedEventId: number
+        selectedEventId: number,
     ) => {
         event.preventDefault();
 
         for (let i = 0; i < events.length; i++) {
-            if (events[i].event_id === selectedEventId) {
+            if (events[i].id === selectedEventId) {
                 setData(events[i].title);
                 setEventTitle(events[i].title);
                 setSelectedEvent(events[i]);
@@ -293,7 +324,7 @@ const DynamicSearch = () => {
     const handleDetails = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
 
-        navigate('/events/details/' + selectedEvent?.event_id);
+        navigate("/events/details/" + selectedEvent?.id);
     };
 
     let startDate,
@@ -301,10 +332,10 @@ const DynamicSearch = () => {
 
     if (selectedEvent && selectedEvent.start !== undefined) {
         const startDateTime = new Date(selectedEvent.start);
-        startDate = format(startDateTime, 'd MMMM yyyy', {
+        startDate = format(startDateTime, "d MMMM yyyy", {
             locale: enUS,
         });
-        startTime = format(startDateTime, 'h:mm a', {
+        startTime = format(startDateTime, "h:mm a", {
             // HH:mm (without a) for European time
             locale: enUS,
         });
@@ -315,10 +346,10 @@ const DynamicSearch = () => {
 
     if (selectedEvent && selectedEvent.end !== undefined) {
         const endDateTime = new Date(selectedEvent.end);
-        endDate = format(endDateTime, 'd MMMM yyyy', {
+        endDate = format(endDateTime, "d MMMM yyyy", {
             locale: enUS,
         });
-        endTime = format(endDateTime, 'h:mm a', {
+        endTime = format(endDateTime, "h:mm a", {
             // HH:mm (without a) for European time
             locale: enUS,
         });
@@ -330,17 +361,17 @@ const DynamicSearch = () => {
         if (data) {
             for (const event of events) {
                 if (data === event.title) {
-                    window.location.href = `/events?event_id=${event.event_id}`;
+                    window.location.href = `/events?id=${event.id}`;
                     return;
                 }
             }
         }
-        if (data) setMessage('searchFailed');
-        else setMessage('nameRequired');
+        if (data) setMessage("searchFailed");
+        else setMessage("nameRequired");
         setTimeout(() => {
-            setMessage('');
+            setMessage("");
         }, 4200);
-        setSearchOpened(false);
+        setSearchOpened(true);
     };
 
     const handleDynamicSearchClick = () => {
@@ -353,7 +384,7 @@ const DynamicSearch = () => {
 
     const handlePageChange = (
         event: React.MouseEvent<HTMLButtonElement>,
-        page: string
+        page: string,
     ) => {
         event.preventDefault();
 
@@ -366,31 +397,47 @@ const DynamicSearch = () => {
             <form
                 onSubmit={handleSubmit}
                 autoComplete="off"
-                className={`${message !== '' ? 'mr-[250px] md:mr-[375px] albertsans' : ''
-                    } flex z-50 mt-6`}
+                className={`${
+                    message !== "" || searchOpened
+                        ? "rounded-xl"
+                        : "dark:bg-gray-800 rounded-xl active:scale-105 active:border-[1.5px]"
+                } dynamic-search w-40 md:w-72 lg:w-[350px] albertsans flex flex-col z-50 mt-6 bg-white max-w-[350px] outline-none custom-z-index-greater ease-in-out transition-all duration-500`}
             >
-                <div onClick={handleDynamicSearchClick} className="dynamic-search flex">
-                    <button
-                        type="submit"
-                        className={`${message !== '' ? 'hidden' : ''} ${searchOpened ? 'rounded-tl-[10px]' : 'rounded-l-[10px]'
-                            } mb-[30px] absolute w-9 h-8 hover:bg-slate-200 text-zinc-300 hover:text-zinc-400 duration-200 custom-z-index-greatest transition-all`}
-                    >
-                        <IoMdSearch className="text-[25px] ml-2 mb " />
-                    </button>
-                    {message === '' && (
+                <div
+                    onClick={handleDynamicSearchClick}
+                    className={`${
+                        message !== "" || searchOpened
+                            ? "rounded-t-xl"
+                            : "dark:bg-gray-800 rounded-xl"
+                    }  flex shadow-lg hover:shadow-sm ease-in-out transition-all duration-500`}
+                >
+                    {message === "" && (
                         <input
                             type="search"
                             id="search"
                             name="search"
                             value={data}
                             onChange={(e) => handleInput(e.target.value)}
-                            placeholder={searchOpened ? '' : 'Search'}
-                            className={`${message !== '' || searchOpened
-                                ? 'rounded-t-xl'
-                                : 'shadow-lg hover:shadow-sm active:border-2 hover:border-[0.5px] active:shadow-lg dark:bg-gray-800 rounded-xl'
-                                } w-40 md:w-72 lg:w-[350px] text-top border-1 bg-white opacity-80 max-w-[350px] pl-10 p-1 outline-none custom-z-index-greater ease-in-out active:scale-y-105 transition-all duration-500`}
+                            placeholder={searchOpened ? "" : "Search"}
+                            className={`${
+                                message !== ""
+                                    ? "rounded-t-xl"
+                                    : searchOpened
+                                      ? "rounded-tl-xl"
+                                      : "dark:bg-gray-800 rounded-l-xl"
+                            }  text-top w-full bg-white opacity-80 max-w-[350px] max-h-8 pl-3 p-1 outline-none custom-z-index-greater ease-in-out transition-all duration-500`}
                         />
                     )}
+                    <button
+                        type="submit"
+                        className={`${message !== "" ? "hidden" : ""} ${
+                            searchOpened
+                                ? "rounded-tr-[10px]"
+                                : "rounded-r-[10px]"
+                        } w-9 h-8 flex items-center p-1 justify-center hover:bg-slate-200 bg-white opacity-80 text-zinc-300 hover:text-zinc-400 duration-200 custom-z-index-greatest transition-all`}
+                    >
+                        <IoMdSearch className="text-[25px]" />
+                    </button>
                     {/* {!eventSearchFailed &&
             !eventDeleted &&
             !eventArchived &&
@@ -407,80 +454,158 @@ const DynamicSearch = () => {
                 {searchOpened && (
                     <>
                         <div
-                            className={`${message !== '' || searchOpened
-                                ? 'shadow-lg hover:shadow-md active:shadow-lg bg-white dark:bg-gray-800'
-                                : 'bg-transparent'
-                                } ${message !== '' ? 'h-[76px]' : 'pt-[26px]'}
-                    dynamic-search overflow-x-auto flex flex-col justify rounded-xl items-center absolute w-[245px] h-[217px] text-top md:w-[350px] p-0.5 custom-z-index-great ease-in-out transition-all duration-500 albertsans outline-none`}
+                            className={`${
+                                message !== "" || searchOpened
+                                    ? "shadow-lg hover:shadow-md active:shadow-lg bg-white dark:bg-gray-800"
+                                    : "bg-transparent"
+                            } ${message !== "" && "h-[76px] rounded-xl"}
+                    dynamic-search w-full overflow-y-auto overflow-x-hidden flex flex-col justify-start items-center h-[217px] p-0.5 custom-z-index-great ease-in-out transition-all duration-500 albertsans outline-none`}
                         >
                             {/* Max height 330px */}
                             {/* Code to display searched event delete and modify buttons */}
 
-                            {searchOpened && selectedEvent && message === '' ? (
+                            {searchOpened && selectedEvent && message === "" ? (
                                 <>
-                                    <div className="flex flex-col items-center mt-4 w-full">
-                                        <p>{selectedEvent ? eventTitle : ''}</p>
-                                        {startDate === endDate ? (
-                                            <p className="text-sm text-center px-10">
-                                                {startDate}, {startTime} - {endTime}
+                                    <div className="flex flex-col items-center justify-center w-full pt-4 px-4">
+                                        <div className="space-y-1 w-full text-center">
+                                            <div className="flex items-center justify-between px-6 space-x-2">
+                                                <p className="text-[20px] text-left">
+                                                    {selectedEvent
+                                                        ? eventTitle
+                                                        : ""}
+                                                </p>
+                                                {selectedEvent && (
+                                                    <button
+                                                        onClick={(
+                                                            e: React.MouseEvent<HTMLButtonElement>,
+                                                        ) => handleDetails(e)}
+                                                        className="custom-z-index-great p-1.5 bg-zinc-100 dark:bg-zinc-600 hover:bg-zinc-200 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-md transition-all text-black dark:text-white text-left"
+                                                        title="Details"
+                                                    >
+                                                        <MdInfoOutline
+                                                            size={18}
+                                                        />
+                                                    </button>
+                                                )}
+                                            </div>
+                                            <p>
+                                                {selectedEvent
+                                                    ? selectedEvent.description
+                                                    : ""}
                                             </p>
-                                        ) : (
-                                            <p className="text-[16px] text-center px-6 lg:px-4">
-                                                From {startDate} to {endDate}, <br />
-                                                {startTime} - {endTime}
-                                            </p>
-                                        )}
+                                            {startDate === endDate ? (
+                                                <p className="text-sm text-center">
+                                                    {startDate}, {startTime} -{" "}
+                                                    {endTime}
+                                                </p>
+                                            ) : (
+                                                <p className="text-[16px] text-center">
+                                                    From {startDate} to{" "}
+                                                    {endDate}, <br />
+                                                    {startTime} - {endTime}
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="my-5 space-x-5">
+                                    <div className="my-5 flex w-full space-x-3 items-center justify-start pl-8">
                                         <button
-                                            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                                                handleDetails(e)
+                                            onClick={(e) =>
+                                                toggleEventStatus(
+                                                    e,
+                                                    selectedEvent,
+                                                )
                                             }
-                                            className="custom-z-index-great px-3 py-3 bg-zinc-50 dark:bg-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-[4.5px] transition-all text-black dark:text-white"
+                                            className="custom-z-index-great p-2 bg-zinc-100 dark:bg-zinc-600 hover:bg-zinc-200 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-md transition-all text-black dark:text-white"
+                                            title={
+                                                selectedEvent.status ===
+                                                Status.CLOSED
+                                                    ? "Mark as Open"
+                                                    : "Mark as Completed"
+                                            }
                                         >
-                                            Details
+                                            {selectedEvent.status ===
+                                            Status.CLOSED ? (
+                                                <MdCheckCircle
+                                                    size={20}
+                                                    className="text-emerald-500"
+                                                />
+                                            ) : (
+                                                <MdRadioButtonUnchecked
+                                                    size={20}
+                                                    className="text-slate-500"
+                                                />
+                                            )}
                                         </button>
                                         <button
-                                            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                                                deleteEventOnServer(e, selectedEvent.event_id)
+                                            onClick={(
+                                                e: React.MouseEvent<HTMLButtonElement>,
+                                            ) =>
+                                                archiveEventOnServer(
+                                                    e,
+                                                    selectedEvent.id,
+                                                )
                                             }
-                                            className="custom-z-index-great px-3 py-3 bg-zinc-50 dark:bg-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-[4.5px] transition-all text-black dark:text-white"
+                                            className="custom-z-index-great p-2 bg-zinc-100 dark:bg-zinc-600 hover:bg-zinc-200 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-md transition-all text-black dark:text-white"
+                                            title={
+                                                selectedEvent.status ===
+                                                Status.ARCHIVED
+                                                    ? "Unarchive"
+                                                    : "Archive"
+                                            }
                                         >
-                                            Delete
+                                            <RiArchive2Fill
+                                                size={20}
+                                                className="text-blue-500"
+                                            />
                                         </button>
                                         <button
-                                            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                                                archiveEventOnServer(e, selectedEvent.event_id)
+                                            onClick={(
+                                                e: React.MouseEvent<HTMLButtonElement>,
+                                            ) =>
+                                                deleteEventOnServer(
+                                                    e,
+                                                    selectedEvent.id,
+                                                )
                                             }
-                                            className="custom-z-index-great px-3 py-3 bg-zinc-50 dark:bg-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-[4.5px] transition-all text-black dark:text-white"
+                                            className="custom-z-index-great p-2 bg-zinc-100 dark:bg-zinc-600 hover:bg-zinc-200 dark:hover:bg-zinc-500 active:bg-zinc-200 dark:active:bg-zinc-400 rounded-md transition-all text-red-500 hover:text-red-600"
+                                            title="Delete"
                                         >
-                                            Archive
+                                            <MdDelete size={20} />
                                         </button>
                                     </div>
                                 </>
                             ) : (
-                                ''
+                                ""
                             )}
 
                             {/* Code to display all events in a search bar */}
                             {events.length &&
-                                searchOpened &&
-                                pageChosen === 'allEvents' &&
-                                !eventTitle &&
-                                message === '' ? (
-                                <ul className="mt-[2px] ease-in-out">
+                            searchOpened &&
+                            pageChosen === "allEvents" &&
+                            !eventTitle &&
+                            message === "" ? (
+                                <ul className="w-full mt-[2px] ease-in-out">
                                     <h1 className="font-bold py-2 w-full text-center">
-                                        {!events[0] && data && 'Event does not exist'}
-                                        {data !== '' && events[0] !== null ? '' : 'All events'}
+                                        {!events[0] &&
+                                            data &&
+                                            "Event does not exist"}
+                                        {data !== "" && events[0] !== null
+                                            ? ""
+                                            : "All events"}
                                     </h1>
                                     {events.map((item) => (
-                                        <li key={item.event_id}>
+                                        <li key={item.id}>
                                             <button
-                                                onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                                                    handleEventChoose(e, item.event_id)
+                                                onClick={(
+                                                    e: React.MouseEvent<HTMLButtonElement>,
+                                                ) =>
+                                                    handleEventChoose(
+                                                        e,
+                                                        item.id,
+                                                    )
                                                 }
-                                                key={item.event_id}
-                                                className="dynamic-search ease-in-out w-[250px] md:w-[346px] overflow-scroll text-center hover:bg-slate-100 dark:hover:bg-gray-700 font-normal py-[10px] border-y border-zinc-100 dark:border-zinc-700 duration-300 transition-all"
+                                                key={item.id}
+                                                className="dynamic-search ease-in-out w-full px-4 overflow-hidden text-ellipsis whitespace-nowrap text-center hover:bg-slate-100 dark:hover:bg-gray-700 font-normal py-[10px] border-y border-zinc-100 dark:border-zinc-700 duration-300 transition-all"
                                             >
                                                 {item.title}
                                             </button>
@@ -488,110 +613,136 @@ const DynamicSearch = () => {
                                     ))}
                                 </ul>
                             ) : (
-                                ''
+                                ""
                             )}
 
                             {events.length &&
-                                searchOpened &&
-                                pageChosen === 'nearestEvent' &&
-                                !eventTitle &&
-                                message === '' ? (
-                                <ul className="items-center smt-[2px]">
+                            searchOpened &&
+                            pageChosen === "nearestEvent" &&
+                            !eventTitle &&
+                            message === "" ? (
+                                <ul className="w-full mt-[2px] ease-in-out">
                                     <h1 className="font-bold py-2 w-full text-center">
                                         Nearest events
                                     </h1>
                                     {nearestEvents.map((item) => (
-                                        <li key={item.event_id}>
+                                        <li key={item.id}>
                                             <button
-                                                onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                                                    handleEventChoose(e, item.event_id)
+                                                onClick={(
+                                                    e: React.MouseEvent<HTMLButtonElement>,
+                                                ) =>
+                                                    handleEventChoose(
+                                                        e,
+                                                        item.id,
+                                                    )
                                                 }
-                                                className="dynamic-search w-[250px] md:w-[346px] overflow-scroll text-center hover:bg-slate-100 dark:hover:bg-gray-700 font-normal py-[10px] border-y border-zinc-100 dark:border-zinc-700 duration-300 transition-all"
+                                                className="dynamic-search flex items-center justify-center w-full px-4 overflow-hidden text-ellipsis whitespace-nowrap text-center hover:bg-slate-100 dark:hover:bg-gray-700 font-normal py-[10px] border-y border-zinc-100 dark:border-zinc-700 duration-300 transition-all"
                                             >
-                                                {item.title} -{' '}
-                                                {format(new Date(item.start), 'd MMMM yyyy h:mm', {
-                                                    locale: enUS,
-                                                })}
+                                                {item.title}{" "}
+                                                <div className="w-[1.5px] h-6 dark:bg-white bg-gray-500 mx-3" />{" "}
+                                                {format(
+                                                    new Date(item.start),
+                                                    "d MMMM yyyy h:mm",
+                                                    {
+                                                        locale: enUS,
+                                                    },
+                                                )}
                                             </button>
                                         </li>
                                     ))}
                                 </ul>
                             ) : (
-                                ''
+                                ""
                             )}
 
                             {/* Code to display various errors in a search bar */}
 
-                            {data && message === 'searchFailed' && (
+                            {data && message === "searchFailed" && (
                                 <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
                                     <ImCross className="text-red-600 text-xl" />
-                                    <h1 className="font-medium">Event does not exist</h1>
+                                    <h1 className="font-medium">
+                                        Event does not exist
+                                    </h1>
                                 </div>
                             )}
 
-                            {!data && message === 'nameRequired' && (
+                            {!data && message === "nameRequired" && (
                                 <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
                                     <PiWarningOctagonFill className="text-yellow-500 text-2xl" />
-                                    <h1 className="font-medium">Event name is required</h1>
+                                    <h1 className="font-medium">
+                                        Event name is required
+                                    </h1>
                                 </div>
                             )}
 
-                            {message === 'deleted' && (
+                            {message === "deleted" && (
                                 <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
                                     <MdDelete className="text-red-400 text-2xl" />
-                                    <h1 className="font-medium">Event deleted successfully</h1>
+                                    <h1 className="font-medium">
+                                        Event deleted successfully
+                                    </h1>
                                 </div>
                             )}
 
-                            {message === 'archived' && (
+                            {message === "archived" && (
                                 <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
                                     <RiArchive2Fill className="text-slate-400 text-xl" />
-                                    <h1 className="font-medium">Event archived successfully</h1>
+                                    <h1 className="font-medium">
+                                        Event archived successfully
+                                    </h1>
                                 </div>
                             )}
 
-                            {message === 'unexpected' && (
+                            {message === "unexpected" && (
                                 <div className="flex space-x-5 py-[22px] ease-in-out transition-all">
                                     <ImCross className="text-red-600 text-xl" />
-                                    <h1 className="font-medium">Something went wrong</h1>
+                                    <h1 className="font-medium">
+                                        Something went wrong
+                                    </h1>
                                 </div>
                             )}
                         </div>
                         {searchOpened && (
                             <div
-                                className={`${message === ''
-                                    ? 'shadow-lg hover:shadow-md active:shadow-lg bg-white dark:bg-gray-800'
-                                    : ' bg-transparent'
-                                    }
-                    dynamic-search overflow-x-auto flex flex-col justify-around items-center rounded-b-xl mt-52 absolute w-[245px] text-top md:w-[350px] p-0.5 custom-z-index-great ease-in-out transition-all duration-500 albertsans outline-none`}
+                                className={`${
+                                    message === ""
+                                        ? "shadow-lg hover:shadow-md active:shadow-lg bg-white dark:bg-gray-800"
+                                        : " bg-transparent"
+                                }
+                    dynamic-search w-full flex flex-col justify-around items-center rounded-b-xl p-0.5 custom-z-index-great ease-in-out transition-all duration-500 albertsans outline-none`}
                             >
-                                {searchOpened && message === '' ? (
-                                    <div className="flex justify-center space-x-1 py-2">
-                                        <button
-                                            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                                                handlePageChange(e, 'allEvents')
-                                            }
-                                            className="text-xl hover:scale-110 duration-150"
-                                        >
-                                            {/* {pageChosen === 'allEvents' ? <GoDotFill /> : <GoDot />} */}
-                                            <GoDotFill />
-                                        </button>
-                                        <button
-                                            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                                                handlePageChange(e, 'nearestEvent')
-                                            }
-                                            className="text-xl hover:scale-110 duration-150"
-                                        >
-                                            {/* {pageChosen === 'nearestEvent' ? (
-                            <GoDotFill />
-                          ) : (
-                            <GoDot />
-                          )} */}
-                                            <GoDotFill />
-                                        </button>
+                                {searchOpened && message === "" && (
+                                    <div className="flex justify-center">
+                                        <div className="rounded-2xl bg-zinc-100 dark:bg-gray-700 p-1 flex">
+                                            <button
+                                                className={`${pageChosen === "allEvents" ? "bg-zinc-200 dark:bg-zinc-500 hover:bg-zinc-300 dark:hover:bg-zinc-400 " : "bg-zinc-100 dark:bg-zinc-500 hover:bg-zinc-300 dark:hover:bg-zinc-400"} transition-colors text-sm font-medium rounded-xl px-4 py-1`}
+                                                onClick={(
+                                                    e: React.MouseEvent<HTMLButtonElement>,
+                                                ) =>
+                                                    handlePageChange(
+                                                        e,
+                                                        "allEvents",
+                                                    )
+                                                }
+                                            >
+                                                All Events
+                                            </button>
+
+                                            <button
+                                                className={`${pageChosen === "nearestEvent" ? "bg-zinc-200 dark:bg-zinc-500 hover:bg-zinc-300 dark:hover:bg-zinc-400 " : "bg-zinc-100 dark:bg-zinc-500 hover:bg-zinc-300 dark:hover:bg-zinc-400"} transition-colors text-sm font-medium  rounded-xl px-4 py-1`}
+                                                onClick={(
+                                                    e: React.MouseEvent<HTMLButtonElement>,
+                                                ) =>
+                                                    handlePageChange(
+                                                        e,
+                                                        "nearestEvent",
+                                                    )
+                                                }
+                                            >
+                                                Nearest Events
+                                            </button>
+                                        </div>
                                     </div>
-                                ) : (
-                                    ''
                                 )}
                             </div>
                         )}

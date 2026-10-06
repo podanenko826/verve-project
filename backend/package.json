@@ -4,17 +4,24 @@
     "type": "module",
     "main": "app.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "nodemon --exec tsx app.ts"
     },
     "author": "",
     "license": "ISC",
     "description": "",
     "dependencies": {
-        "express": "^5.2.1"
+        "@prisma/client": "^6.19.3",
+        "express": "^5.2.1",
+        "express-oauth2-jwt-bearer": "^1.10.0"
     },
     "devDependencies": {
         "@types/express": "^5.0.6",
         "@types/node": "^22.20.2",
+        "nodemon": "^3.1.14",
+        "prisma": "^6.19.3",
+        "ts-node": "^10.9.2",
+        "tsx": "^4.23.13",
         "typescript": "^7.0.2"
     }
 }

@@ -41,7 +41,7 @@ export default function Home() {
                         ) : (
                             <>
                                 <Link
-                                    to="/register"
+                                    to="/login"
                                     className="text-zinc-500 hover:text-zinc-700 transition-all bg-white px-4 py-1 font-semibold rounded-lg shadow-lg hover:shadow-sm duration-200 active:shadow-lg"
                                 >
                                     Sign up

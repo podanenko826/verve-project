@@ -1,97 +1,99 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import SideBar from '../../components/SideBar';
 import NavBar from '../../components/NavBar';
-// import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
+import { MdEmail } from 'react-icons/md';
+import { FaCheckCircle } from 'react-icons/fa';
 
 export default function SettingsPage() {
-    const [newPassword, setNewPassword] = useState<string>('');
-    const [currentPassword, setCurrentPassword] = useState<string>('');
-    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const { user } = useAuth0();
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-    const handleCurrentPasswordChange = (value: any) => {
-        setCurrentPassword(value);
-    };
+    const handlePasswordReset = async () => {
+        if (!user?.email) return;
+        
+        setStatus('loading');
+        try {
+            const response = await fetch(`https://${import.meta.env.VITE_AUTH0_DOMAIN}/dbconnections/change_password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    client_id: import.meta.env.VITE_AUTH0_CLIENT_ID,
+                    email: user.email,
+                    connection: 'Username-Password-Authentication',
+                }),
+            });
 
-    const handleNewPasswordChange = (value: string) => {
-        setNewPassword(value);
-    };
-
-    const toggleShowPassword = () => {
-        setShowPassword((prevShowPassword) => !prevShowPassword);
-    };
-
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-
-        // const response = await axios.post('/api/update-password', {
-        //     currentPassword,
-        //     newPassword,
-        // });
+            if (response.ok) {
+                setStatus('success');
+                setTimeout(() => setStatus('idle'), 5000);
+            } else {
+                setStatus('error');
+                setTimeout(() => setStatus('idle'), 5000);
+            }
+        } catch (error) {
+            console.error('Password reset error:', error);
+            setStatus('error');
+            setTimeout(() => setStatus('idle'), 5000);
+        }
     };
 
     return (
         <>
-            <div className="flex w-full albertsans">
+            <div className="flex w-full albertsans min-h-screen bg-slate-50 dark:bg-slate-900">
                 <div className="hidden md:block h-full">
                     <SideBar />
                 </div>
                 <div className="flex flex-col w-full">
                     <NavBar />
-                    <div className="flex flex-col mx-16">
-                        <h1 className="text-4xl self-start">Settings</h1>
+                    <div className="flex flex-col px-8 md:px-16 pb-16">
+                        <h1 className="text-4xl self-start font-bold text-gray-800 dark:text-gray-100 mb-10">Settings</h1>
 
-                        <div className="flex flex-col mt-10 w-5/6 rounded-[25px] border bg-white dark:bg-slate-800">
-                            <h1 className="text-xl pl-6 pt-6">Password</h1>
-                            <h2 className="text-slate-500 text-[14px] p-6 border-b-[0.5px] font-normal uppercase">
-                                Update password
-                            </h2>
-                            <div className="flex">
-                                <form
-                                    className="flex flex-col p-8 mt-4 space-y-12 border-b-[0.5px]"
-                                    action="post"
-                                    onSubmit={(e) => handleSubmit(e)}
-                                >
-                                    <div className="flex space-y-4 flex-col">
-                                        <div className='flex'>
-                                            <input
-                                                type={showPassword ? 'text' : 'password'}
-                                                className="w-full rounded-lg dark:text-black h-10 pl-3 border-[1px]"
-                                                placeholder="Current password"
-                                                onChange={(e) =>
-                                                    handleCurrentPasswordChange(e.target.value)
-                                                }
-                                                value={currentPassword}
-                                            />
-                                            <div className="flex w-1/12 ml-5 whitespace-nowrap items-center space-x-4">
-                                                <label htmlFor="show-password">Show Password</label>
-                                                <input
-                                                    className="w-4 h-4"
-                                                    type="checkbox"
-                                                    onChange={toggleShowPassword}
-                                                />
-                                            </div>
-                                        </div>
-                                        <input
-                                            type={showPassword ? 'text' : 'password'}
-                                            className="rounded-lg dark:text-black h-10 pl-3 border-[1px]"
-                                            placeholder="New password"
-                                            onChange={(e) => handleNewPasswordChange(e.target.value)}
-                                            value={newPassword}
-                                        />
-                                    </div>
-                                    <button
-                                        className="w-1/2 px-5 py-3 my-3 rounded-xl bg-slate-300"
-                                        type="submit"
-                                    >
-                                        Update
-                                    </button>
-                                </form>
-                                {/* <form action="post" className="w-[200px] h-[100px] bg-black">
-                  <div className="flex">
-                    <input type="text" />
-                  </div>
-                </form> */}
+                        <div className="flex flex-col w-full max-w-3xl rounded-3xl border border-gray-200 shadow-sm bg-white dark:bg-slate-800 dark:border-slate-700 overflow-hidden transition-all duration-300">
+                            <div className="p-8 border-b border-gray-100 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800/50">
+                                <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">Security</h1>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your account security and authentication methods.</p>
                             </div>
+                            
+                            <div className="p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                <div className="flex flex-col max-w-sm">
+                                    <h2 className="text-lg font-medium text-gray-800 dark:text-gray-100">Password</h2>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">
+                                        {!user?.sub?.startsWith('auth0|') 
+                                            ? "Your account uses a social login provider (like Google). Please manage your password directly through your provider." 
+                                            : <>You can request a password reset email. This will send a secure link to <span className="font-medium text-gray-700 dark:text-gray-300">{user?.email}</span> to set up a new password.</>}
+                                    </p>
+                                </div>
+
+                                <div className="flex-shrink-0 flex items-center md:justify-end justify-start">
+                                    {!user?.sub?.startsWith('auth0|') ? (
+                                        <div className="flex items-center space-x-2 text-slate-500 bg-slate-100 dark:bg-slate-800 px-6 py-3 rounded-2xl border border-slate-200 dark:border-slate-700">
+                                            <span className="font-medium">Managed by Provider</span>
+                                        </div>
+                                    ) : status === 'success' ? (
+                                        <div className="flex items-center space-x-2 text-green-600 bg-green-50 dark:bg-green-900/20 px-6 py-3 rounded-2xl border border-green-100 dark:border-green-800/30">
+                                            <FaCheckCircle className="text-xl" />
+                                            <span className="font-medium">Email Sent!</span>
+                                        </div>
+                                    ) : (
+                                        <button
+                                            onClick={handlePasswordReset}
+                                            disabled={status === 'loading'}
+                                            className="flex items-center space-x-3 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
+                                        >
+                                            <MdEmail className="text-xl opacity-90" />
+                                            <span>
+                                                {status === 'loading' ? 'Sending...' : 'Send Reset Link'}
+                                            </span>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                            {status === 'error' && (
+                                <div className="px-8 pb-8 text-sm text-red-500 font-medium animate-pulse">
+                                    Failed to send password reset email. Please try again later.
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

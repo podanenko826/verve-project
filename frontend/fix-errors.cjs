@@ -8,7 +8,7 @@ fs.writeFileSync('src/App.tsx', app);
 // 2. src/components/Dashboard.tsx
 let dash = fs.readFileSync('src/components/Dashboard.tsx', 'utf8');
 dash = dash.replace("import React, { useEffect, useState } from 'react';", "import { useEffect, useState } from 'react';");
-dash = dash.replace(/enum Status \{[\s\S]*?\}/, "const Status = { OPEN: 'OPEN', IN_PROGRESS: 'IN_PROGRESS', CLOSED: 'CLOSED' } as const;\ntype Status = typeof Status[keyof typeof Status];");
+dash = dash.replace(/enum Status \{[\s\S]*?\}/, "const Status = { OPEN: 'OPEN', IN_PROGRESS: 'IN_PROGRESS', CLOSED: 'CLOSED', ARCHIVED: 'ARCHIVED' } as const;\ntype Status = typeof Status[keyof typeof Status];");
 dash = dash.replace("const currentDate = new Date();", "");
 fs.writeFileSync('src/components/Dashboard.tsx', dash);
 
@@ -17,7 +17,7 @@ let search = fs.readFileSync('src/components/DynamicSearch.tsx', 'utf8');
 search = search.replace("import { MdOutlineDone } from 'react-icons/md';\n", "");
 search = search.replace("import { GoDot } from 'react-icons/go';\n", "");
 search = search.replace("import { IoIosSearch } from 'react-icons/io';\n", "");
-search = search.replace(/enum Status \{[\s\S]*?\}/, "const Status = { OPEN: 'OPEN', IN_PROGRESS: 'IN_PROGRESS', CLOSED: 'CLOSED' } as const;\ntype Status = typeof Status[keyof typeof Status];");
+search = search.replace(/enum Status \{[\s\S]*?\}/, "const Status = { OPEN: 'OPEN', IN_PROGRESS: 'IN_PROGRESS', CLOSED: 'CLOSED', ARCHIVED: 'ARCHIVED' } as const;\ntype Status = typeof Status[keyof typeof Status];");
 search = search.replace("const [isSearchBarEmpty, setIsSearchBarEmpty] = useState(true);", "");
 search = search.replace("if (input) setIsSearchBarEmpty(false);\n        else setIsSearchBarEmpty(true);", "");
 search = search.replace("const dynamicSearchRef = useRef<HTMLLabelElement>(null);", "");

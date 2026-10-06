@@ -1,23 +1,15 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-import SideBar from '../../../components/SideBar';
-import NavBar from '../../../components/NavBar';
-import { format } from 'date-fns';
-import { enUS } from 'date-fns/locale';
-import type { ProcessedEvent } from '@aldabil/react-scheduler/types';
-import { useParams } from 'react-router-dom';
+import SideBar from "../../../components/SideBar";
+import NavBar from "../../../components/NavBar";
+import { format } from "date-fns";
+import { enUS } from "date-fns/locale";
+import type { ProcessedEvent } from "@aldabil/react-scheduler/types";
+import { useParams } from "react-router-dom";
 
-const Status = { OPEN: 'OPEN', IN_PROGRESS: 'IN_PROGRESS', CLOSED: 'CLOSED' } as const;
-type Status = typeof Status[keyof typeof Status];
-
-interface Event {
-    event_id: number;
-    title: string;
-    start: Date | number;
-    end: Date | number;
-    status: Status;
-}
+import { Status } from "../../../types";
+import type { Event } from "../../../types";
 
 const DetailsPage = () => {
     const { id } = useParams();
@@ -27,17 +19,17 @@ const DetailsPage = () => {
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                const response = await axios.get('/api/events');
+                const response = await axios.get("/api/events");
                 if (!Array.isArray(response.data)) {
                     return;
                 }
                 for (let i = 0; i < response.data.length; i++) {
-                    if (id && response.data[i].event_id === parseInt(id)) {
+                    if (id && response.data[i].id === parseInt(id)) {
                         setSelectedEvent(response.data[i]);
                     }
                 }
             } catch (error) {
-                console.error('Error fetching event:', error);
+                console.error("Error fetching event:", error);
             }
         };
 
@@ -45,8 +37,8 @@ const DetailsPage = () => {
     }, []);
 
     async function archiveEventOnServer(data: Event) {
-        if (!data.event_id) {
-            console.error('Id is required to delete an event.');
+        if (!data.id) {
+            console.error("Id is required to delete an event.");
         }
 
         const updatedData = {
@@ -59,18 +51,18 @@ const DetailsPage = () => {
         try {
             console.log(updatedData);
             const updatedEvent = await updateEventOnServer(
-                data.event_id,
-                updatedData
+                data.id,
+                updatedData,
             );
-            console.log('Updated event on server:', updatedEvent);
+            console.log("Updated event on server:", updatedEvent);
         } catch (error) {
-            console.error('Error archiving event:', error);
+            console.error("Error archiving event:", error);
         }
     }
 
     const updateEventOnServer = async (
         updatedId: number,
-        data: any
+        data: any,
     ): Promise<ProcessedEvent | undefined> => {
         try {
             const response = await axios.put(`/api/events/${updatedId}`, data);
@@ -78,18 +70,18 @@ const DetailsPage = () => {
             if (response.status === 200) {
                 return response.data as ProcessedEvent;
             } else {
-                console.error('Unexpected response status:', response.status);
+                console.error("Unexpected response status:", response.status);
                 return undefined;
             }
         } catch (error) {
-            console.error('Error updating event:', error);
+            console.error("Error updating event:", error);
             throw error;
         }
     };
 
     async function deleteEventOnServer(deletedId: number) {
         if (!deletedId) {
-            return console.error('Id is required to delete an event.');
+            return console.error("Id is required to delete an event.");
         }
 
         try {
@@ -98,11 +90,11 @@ const DetailsPage = () => {
             if (response.status === 200) {
                 return true; // Event deleted successfully
             } else {
-                console.error('Unexpected response status:', response.status);
+                console.error("Unexpected response status:", response.status);
                 return false; // Unexpected response status
             }
         } catch (error) {
-            console.error('Error deleting event:', error);
+            console.error("Error deleting event:", error);
             throw error; // Propagate the error or handle it as needed
         }
     }
@@ -112,10 +104,10 @@ const DetailsPage = () => {
 
     if (selectedEvent && selectedEvent.start !== undefined) {
         const startDateTime = new Date(selectedEvent.start);
-        startDate = format(startDateTime, 'd MMMM yyyy', {
+        startDate = format(startDateTime, "d MMMM yyyy", {
             locale: enUS,
         });
-        startTime = format(startDateTime, 'h:mm a', {
+        startTime = format(startDateTime, "h:mm a", {
             // HH:mm (without a) for European time
             locale: enUS,
         });
@@ -126,10 +118,10 @@ const DetailsPage = () => {
 
     if (selectedEvent && selectedEvent.end !== undefined) {
         const endDateTime = new Date(selectedEvent.end);
-        endDate = format(endDateTime, 'd MMMM yyyy', {
+        endDate = format(endDateTime, "d MMMM yyyy", {
             locale: enUS,
         });
-        endTime = format(endDateTime, 'h:mm a', {
+        endTime = format(endDateTime, "h:mm a", {
             // HH:mm (without a) for European time
             locale: enUS,
         });
@@ -143,17 +135,26 @@ const DetailsPage = () => {
                 </div>
                 <div className="flex flex-col w-screen">
                     <NavBar />
-                    <h1 className="text-[45px] font-mono self-center">Event details</h1>
-                    <div className="mt-10 ml-12">
+                    <div className="flex flex-col px-8 md:px-16 pb-16">
+                        <h1 className="text-4xl self-start font-bold text-gray-800 dark:text-gray-100 mb-10">
+                            Event details
+                        </h1>
                         {selectedEvent ? (
                             <>
                                 <p className="font-medium">Name</p>
-                                <h1 className="mb-10">{selectedEvent?.title}</h1>
+                                <h1 className="mb-10">
+                                    {selectedEvent?.title}
+                                </h1>
+
+                                <p className="font-medium">Description</p>
+                                <h1 className="mb-10">
+                                    {selectedEvent?.description}
+                                </h1>
 
                                 <p className="font-medium">Time Duration</p>
                                 {startDate === endDate
                                     ? startDate
-                                    : 'From ' + startDate + ' to ' + endDate}
+                                    : "From " + startDate + " to " + endDate}
                                 <h1 className="mb-3"></h1>
                                 <h1 className="mb-10">
                                     {startTime} - {endTime}
@@ -164,16 +165,18 @@ const DetailsPage = () => {
 
                                 <p className="font-medium">Status</p>
                                 <h1 className="mb-10">
-                                    {selectedEvent.status === 'OPEN'
-                                        ? 'Opened'
-                                        : selectedEvent.status === 'CLOSED'
-                                            ? 'Archived'
-                                            : 'In Progress'}
+                                    {selectedEvent.status === "OPEN"
+                                        ? "Opened"
+                                        : selectedEvent.status === "CLOSED"
+                                          ? "Archived"
+                                          : "In Progress"}
                                 </h1>
                                 <div className="space-x-5">
                                     <button
                                         onClick={() =>
-                                            deleteEventOnServer(selectedEvent.event_id)
+                                            deleteEventOnServer(
+                                                selectedEvent.id,
+                                            )
                                         }
                                         className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-500 active:bg-zinc-400 duration-300 rounded-[4.5px]"
                                     >
@@ -181,7 +184,9 @@ const DetailsPage = () => {
                                     </button>
                                     <button
                                         onClick={() =>
-                                            deleteEventOnServer(selectedEvent.event_id)
+                                            deleteEventOnServer(
+                                                selectedEvent.id,
+                                            )
                                         }
                                         className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-500 active:bg-zinc-400 duration-300 rounded-[4.5px]"
                                     >
@@ -189,7 +194,9 @@ const DetailsPage = () => {
                                     </button>
                                     <button
                                         onClick={() =>
-                                            deleteEventOnServer(selectedEvent.event_id)
+                                            deleteEventOnServer(
+                                                selectedEvent.id,
+                                            )
                                         }
                                         className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-500 active:bg-zinc-400 duration-300 rounded-[4.5px]"
                                     >
@@ -202,8 +209,8 @@ const DetailsPage = () => {
                                         className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-500 active:bg-zinc-400 duration-300 rounded-[4.5px]"
                                     >
                                         {selectedEvent.status === Status.OPEN
-                                            ? 'Archive'
-                                            : 'Unarchive'}
+                                            ? "Archive"
+                                            : "Unarchive"}
                                     </button>
                                 </div>
                             </>

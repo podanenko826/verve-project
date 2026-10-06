@@ -1,7 +1,5 @@
-import React from 'react';
 import SideBar from '../../components/SideBar';
 import NavBar from '../../components/NavBar';
-import { FaUserCircle } from 'react-icons/fa';
 
 export default async function AccountPage() {
 
@@ -15,8 +13,10 @@ export default async function AccountPage() {
                 </div>
                 <div className="flex flex-col w-full">
                     <NavBar />
-                    <div className="flex flex-col mx-16">
-                        <p className="text-3xl">Account</p>
+                    <div className="flex flex-col px-8 md:px-16 pb-16 w-full">
+                        <h1 className="text-4xl self-start font-bold text-gray-800 dark:text-gray-100 mb-10">
+                            Account
+                        </h1>
                         <div className="flex flex-col items-center justify-around mt-8 bg-white w-[450px] border-[1.5px] rounded-[25px]">
                             <div className="flex flex-col items-center">
                                 {/* {currentUser?.image ? (
