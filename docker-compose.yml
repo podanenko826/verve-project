@@ -1,0 +1,21 @@
+services:
+    frontend:
+        build: ./frontend
+        ports:
+            - 5173:5173
+    landing:
+        build: ./landing
+        ports:
+            - 5174:5174
+    backend:
+        build: ./backend
+        ports:
+            - 8080:8080
+    db:
+        image: postgres:18.6-alpine3.24
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER:-app}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+            POSTGRES_DB: ${POSTGRES_DB:-verve}

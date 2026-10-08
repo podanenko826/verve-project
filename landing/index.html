@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Verve | Modern Event Scheduling</title>
+        <meta
+            name="description"
+            content="Verve is the next generation event scheduling platform built for modern teams."
+        />
+        <!-- Preconnect to Google Fonts for performance -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="./style.css" />
+    </head>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="logo">Verve</div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+                <a href="http://localhost:5173/login" class="btn-login" id="loginBtn"
+                    >Login</a
+                >
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <header class="hero" id="home">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Schedule like it's <span class="gradient-text">2026.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Verve is the lightning-fast, beautifully designed event
+                    calendar built to keep your team in sync.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn-primary" id="getStartedBtn">
+                        Get Started for Free
+                    </button>
+                    <button class="btn-secondary">View Live Demo</button>
+                </div>
+            </div>
+
+            <!-- Decorative Elements -->
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+
+            <!-- Mockup Glass Panel -->
+            <div class="hero-mockup glass-panel">
+                <div class="mockup-header">
+                    <div class="dot dot-red"></div>
+                    <div class="dot dot-yellow"></div>
+                    <div class="dot dot-green"></div>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-event pulse-animation">
+                        <span class="event-time">13:00 - 14:00</span>
+                        <span class="event-title">Sync with Design Team</span>
+                    </div>
+                    <div class="mockup-event">
+                        <span class="event-time">15:30 - 16:00</span>
+                        <span class="event-title">Weekly Retrospective</span>
+                    </div>
+                    <div class="mockup-event highlight">
+                        <span class="event-time">Tomorrow</span>
+                        <span class="event-title">Product Launch</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <h2 class="section-title">Why choose Verve?</h2>
+            <div class="features-grid">
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Lightning Fast</h3>
+                    <p>
+                        Built on bleeding-edge tech, Verve loads instantly and
+                        feels incredibly responsive.
+                    </p>
+                </div>
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Beautiful Design</h3>
+                    <p>
+                        An interface that doesn't just work well, but looks
+                        absolutely stunning on any device.
+                    </p>
+                </div>
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Enterprise Security</h3>
+                    <p>
+                        Your schedule is your business. We keep it locked down
+                        with top-tier authentication.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2026 Verve Inc. Built for speed.</p>
+        </footer>
+
+        <script type="module" src="./main.js"></script>
+    </body>
+</html>

@@ -13,7 +13,7 @@ const Login: React.FC = () => {
     }
 
     if (isAuthenticated) {
-        window.location.replace('/dashboard');
+        window.location.replace('/');
         return null;
     }
 
@@ -28,7 +28,7 @@ const Login: React.FC = () => {
                 </p>
                 
                 <button
-                    onClick={() => loginWithRedirect({ appState: { returnTo: '/dashboard' } })}
+                    onClick={() => loginWithRedirect({ appState: { returnTo: '/' } })}
                     className="w-full py-4 px-6 bg-blue-600 text-white font-semibold rounded-xl text-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm"
                 >
                     Log In to Continue

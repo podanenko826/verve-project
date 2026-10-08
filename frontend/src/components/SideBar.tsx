@@ -14,7 +14,7 @@ const SideBar = () => {
         {
             icon: <RiDashboard2Line />,
             label: "Dashboard",
-            href: "/dashboard",
+            href: "/",
             id: 0,
         },
         {

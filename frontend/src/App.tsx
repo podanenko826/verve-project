@@ -1,6 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-
-import Home from "./pages";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 
@@ -17,11 +15,11 @@ function App() {
         <AxiosInterceptor>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/dashboard" element={<Navigate to="/" replace />} />
                     <Route path="/login" element={<Login />} />
 
                     <Route element={<AuthMiddleware />}>
-                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/" element={<Dashboard />} />
                         <Route path="/events" element={<Events />} />
                         <Route
                             path="/events/details/:id"

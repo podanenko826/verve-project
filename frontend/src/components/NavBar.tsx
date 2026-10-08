@@ -79,7 +79,7 @@ const NavBar = () => {
         {
             icon: <RiDashboard2Line />,
             label: "Dashboard",
-            href: "/dashboard",
+            href: "/",
             id: 0,
         },
         {
@@ -122,7 +122,7 @@ const NavBar = () => {
                         onClick={() =>
                             logout({
                                 logoutParams: {
-                                    returnTo: window.location.origin,
+                                    returnTo: "http://localhost:5174",
                                 },
                             })
                         }

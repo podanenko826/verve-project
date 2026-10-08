@@ -13,8 +13,8 @@ const AuthMiddleware = () => {
     }
 
     if (!isAuthenticated) {
-        // Redirect unauthorized users to the landing page as requested
-        return <Navigate to="/" replace />;
+        // Redirect unauthorized users to the login page
+        return <Navigate to="/login" replace />;
     }
 
     return <Outlet />;
