@@ -2,8 +2,7 @@ import { Scheduler } from "@aldabil/react-scheduler";
 import { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
-import { Typography } from "@mui/material";
-import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+
 import type {
     EventActions,
     ProcessedEvent,
@@ -12,7 +11,7 @@ import type {
 import { useSearchParams } from "react-router-dom";
 
 import { IoRefresh } from "react-icons/io5";
-import { RESOURCES } from "./resources";
+
 import type { Event } from "../types";
 
 const CustomEditor = ({ scheduler, onConfirm }: { scheduler: SchedulerHelpers, onConfirm: (e: ProcessedEvent, a: EventActions) => Promise<any> }) => {
@@ -341,7 +340,7 @@ const ISheduller = () => {
         height: 660,
         customEditor: (scheduler: SchedulerHelpers) => <CustomEditor scheduler={scheduler} onConfirm={handleConfirm} />,
         fields: [],
-        viewerExtraComponent: (fields: any[], event: any) => {
+        viewerExtraComponent: (_fields: any[], event: any) => {
             return (
                 <>
                     <div className="mt-2 mb-2 flex justify-start items-center">

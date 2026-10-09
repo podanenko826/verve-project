@@ -5,7 +5,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { IoMenu } from "react-icons/io5";
 import { FaUserCircle } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
-import { MdOutlineAccountCircle } from "react-icons/md";
+
 import { GoSignOut } from "react-icons/go";
 import { RiDashboard2Line } from "react-icons/ri";
 import { RiCalendarEventLine } from "react-icons/ri";

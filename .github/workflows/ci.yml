@@ -2,9 +2,9 @@ name: CI
 
 on:
     push:
-        branches: [ "main" ]
+        branches: ["main"]
     pull_request:
-        branches: [ "main" ]
+        branches: ["main"]
 
 jobs:
     verify-code:
@@ -17,7 +17,7 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: '20'
+                  node-version: "24"
 
             - name: Install & Build Landing
               working-directory: ./landing
@@ -30,7 +30,6 @@ jobs:
               run: |
                   npm install --legacy-peer-deps
                   npm run build
-
 
             - name: Install & Check Backend
               working-directory: ./backend
