@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(getStartedBtn) {
         getStartedBtn.addEventListener('click', () => {
             // Redirect to the main app dashboard
-            window.location.href = "http://localhost:5173/login";
+            window.location.href = "https://app.localhost/login";
         });
     }
 

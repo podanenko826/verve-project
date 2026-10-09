@@ -9,6 +9,7 @@ import {
 } from "../controllers/eventController.ts";
 import { checkJwt } from "../middleware/authMiddleware.ts";
 import { syncUser } from "../middleware/syncUser.ts";
+import { requireRole } from "../middleware/requireRole.ts";
 
 const router = Router();
 
@@ -38,6 +39,6 @@ router.post("/", createEvent);
 
 router.put("/:id", updateEvent);
 
-router.delete("/:id", deleteEvent);
+router.delete("/:id", requireRole('Admin'), deleteEvent);
 
 export default router;

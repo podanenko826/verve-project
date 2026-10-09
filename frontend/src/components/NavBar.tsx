@@ -122,7 +122,7 @@ const NavBar = () => {
                         onClick={() =>
                             logout({
                                 logoutParams: {
-                                    returnTo: "http://localhost:5174",
+                                    returnTo: "https://localhost",
                                 },
                             })
                         }
