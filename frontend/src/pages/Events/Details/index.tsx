@@ -6,15 +6,23 @@ import NavBar from "../../../components/NavBar";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 import type { ProcessedEvent } from "@aldabil/react-scheduler/types";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { Status } from "../../../types";
 import type { Event } from "../../../types";
 
 const DetailsPage = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [selectedEvent, setSelectedEvent] = useState<Event>();
+
+    const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+    const [newName, setNewName] = useState("");
+
+    const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
+    const [newStart, setNewStart] = useState("");
+    const [newEnd, setNewEnd] = useState("");
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -43,7 +51,7 @@ const DetailsPage = () => {
 
         const updatedData = {
             ...data,
-            status: data.status === Status.OPEN ? Status.CLOSED : Status.OPEN,
+            status: data.status === Status.OPEN ? Status.ARCHIVED : Status.OPEN,
         };
 
         setSelectedEvent(updatedData);
@@ -88,6 +96,7 @@ const DetailsPage = () => {
             const response = await axios.delete(`/api/events/${deletedId}`);
 
             if (response.status === 200) {
+                navigate("/events");
                 return true; // Event deleted successfully
             } else {
                 console.error("Unexpected response status:", response.status);
@@ -167,27 +176,30 @@ const DetailsPage = () => {
                                 <h1 className="mb-10">
                                     {selectedEvent.status === "OPEN"
                                         ? "Opened"
-                                        : selectedEvent.status === "CLOSED"
+                                        : selectedEvent.status === "ARCHIVED" || selectedEvent.status === "CLOSED"
                                           ? "Archived"
                                           : "In Progress"}
                                 </h1>
                                 <div className="space-x-5">
                                     <button
-                                        onClick={() =>
-                                            deleteEventOnServer(
-                                                selectedEvent.id,
-                                            )
-                                        }
+                                        onClick={() => {
+                                            setNewName(selectedEvent.title);
+                                            setIsRenameModalOpen(true);
+                                        }}
                                         className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-500 active:bg-zinc-400 duration-300 rounded-[4.5px]"
                                     >
                                         Rename
                                     </button>
                                     <button
-                                        onClick={() =>
-                                            deleteEventOnServer(
-                                                selectedEvent.id,
-                                            )
-                                        }
+                                        onClick={() => {
+                                            if (selectedEvent.start && selectedEvent.end) {
+                                                const startDate = new Date(selectedEvent.start);
+                                                const endDate = new Date(selectedEvent.end);
+                                                setNewStart(startDate.toISOString().slice(0, 16));
+                                                setNewEnd(endDate.toISOString().slice(0, 16));
+                                            }
+                                            setIsTimeModalOpen(true);
+                                        }}
                                         className="px-2 h-10 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-500 active:bg-zinc-400 duration-300 rounded-[4.5px]"
                                     >
                                         Change time
@@ -220,6 +232,69 @@ const DetailsPage = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Rename Modal */}
+            {isRenameModalOpen && selectedEvent && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white dark:bg-zinc-800 p-8 rounded-xl shadow-2xl w-96 text-gray-800 dark:text-gray-100">
+                        <h2 className="text-xl font-bold mb-4">Rename Event</h2>
+                        <input 
+                            type="text" 
+                            className="w-full border border-gray-300 dark:border-zinc-600 rounded-md p-2 mb-4 dark:bg-zinc-700"
+                            value={newName}
+                            onChange={(e) => setNewName(e.target.value)}
+                            placeholder="New Event Name"
+                        />
+                        <div className="flex justify-end space-x-3">
+                            <button onClick={() => setIsRenameModalOpen(false)} className="px-4 py-2 bg-gray-200 dark:bg-zinc-700 rounded-md">Cancel</button>
+                            <button onClick={async () => {
+                                if (!newName) return;
+                                const updatedData = { ...selectedEvent, title: newName };
+                                const result = await updateEventOnServer(selectedEvent.id, updatedData);
+                                if (result) setSelectedEvent(updatedData);
+                                setIsRenameModalOpen(false);
+                            }} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Save</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Change Time Modal */}
+            {isTimeModalOpen && selectedEvent && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white dark:bg-zinc-800 p-8 rounded-xl shadow-2xl w-96 text-gray-800 dark:text-gray-100">
+                        <h2 className="text-xl font-bold mb-4">Change Time</h2>
+                        <div className="mb-4">
+                            <label className="block text-sm mb-1">Start Time</label>
+                            <input 
+                                type="datetime-local" 
+                                className="w-full border border-gray-300 dark:border-zinc-600 rounded-md p-2 dark:bg-zinc-700"
+                                value={newStart}
+                                onChange={(e) => setNewStart(e.target.value)}
+                            />
+                        </div>
+                        <div className="mb-6">
+                            <label className="block text-sm mb-1">End Time</label>
+                            <input 
+                                type="datetime-local" 
+                                className="w-full border border-gray-300 dark:border-zinc-600 rounded-md p-2 dark:bg-zinc-700"
+                                value={newEnd}
+                                onChange={(e) => setNewEnd(e.target.value)}
+                            />
+                        </div>
+                        <div className="flex justify-end space-x-3">
+                            <button onClick={() => setIsTimeModalOpen(false)} className="px-4 py-2 bg-gray-200 dark:bg-zinc-700 rounded-md">Cancel</button>
+                            <button onClick={async () => {
+                                if (!newStart || !newEnd) return;
+                                const updatedData = { ...selectedEvent, start: new Date(newStart), end: new Date(newEnd) };
+                                const result = await updateEventOnServer(selectedEvent.id, updatedData);
+                                if (result) setSelectedEvent(updatedData);
+                                setIsTimeModalOpen(false);
+                            }} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Save</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
