@@ -119,13 +119,15 @@ const NavBar = () => {
             return (
                 <li key={item.id}>
                     <button
-                        onClick={() =>
+                        onClick={() => {
+                            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === 'app.localhost';
+                            const landingUrl = isLocal ? 'http://localhost' : 'https://d3azj019jffdzq.cloudfront.net';
                             logout({
                                 logoutParams: {
-                                    returnTo: "https://localhost",
+                                    returnTo: landingUrl,
                                 },
                             })
-                        }
+                        }}
                         className="text-gray-500 hover:bg-zinc-100 dark:hover:bg-gray-700 active:bg-zinc-200 dark:active:bg-gray-400 rounded-lg transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-[16px] duration-300"
                     >
                         <strong className="pr-1.5">{item.icon}</strong>
