@@ -4,7 +4,7 @@ service: verve-backend
 
 provider:
     name: aws
-    runtime: nodejs20.x
+    runtime: nodejs22.x
     region: eu-west-1
     memorySize: 512
     environment:
