@@ -16,17 +16,19 @@ provider:
 build:
     esbuild:
         bundle: true
-        minify: false
+        minify: true
         external:
             - '@prisma/client'
-            - 'prisma'
 
 package:
     patterns:
+        - '!node_modules/**'
         - 'node_modules/.prisma/**'
-        - '.env'
+        - 'node_modules/@prisma/client/**'
         - '!node_modules/.prisma/client/libquery_engine-darwin-*'
+        - '!node_modules/.prisma/client/libquery_engine-debian-*'
         - '!node_modules/.prisma/client/libquery_engine-rhel-openssl-1.0.x*'
+        - '.env'
 
 functions:
     api:
