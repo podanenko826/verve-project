@@ -1,12 +1,21 @@
 // Simple interaction logic
 document.addEventListener('DOMContentLoaded', () => {
-    
+    // Determine environment URL dynamically
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === 'landing';
+    const frontendUrl = isLocal ? 'https://app.localhost' : 'https://d1wxm3z7v3i1dx.cloudfront.net';
+
+    // Update navbar login button
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) {
+        loginBtn.href = `${frontendUrl}/login`;
+    }
+
     // Add interaction to the Get Started button
     const getStartedBtn = document.getElementById('getStartedBtn');
     if(getStartedBtn) {
         getStartedBtn.addEventListener('click', () => {
             // Redirect to the main app dashboard
-            window.location.href = "https://app.localhost/login";
+            window.location.href = `${frontendUrl}/login`;
         });
     }
 
