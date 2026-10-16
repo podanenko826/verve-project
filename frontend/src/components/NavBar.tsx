@@ -120,13 +120,26 @@ const NavBar = () => {
                 <li key={item.id}>
                     <button
                         onClick={() => {
-                            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === 'app.localhost';
-                            const landingUrl = isLocal ? 'http://localhost' : 'https://d3azj019jffdzq.cloudfront.net';
+                            const host = window.location.hostname;
+                            const port = window.location.port;
+
+                            let landingUrl;
+                            if (port === "5173") {
+                                // dev server (no docker)
+                                landingUrl = "http://localhost:5174";
+                            } else if (host === "app.localhost") {
+                                // docker with nginx
+                                landingUrl = "https://localhost";
+                            } else {
+                                // prod (CloudFront)
+                                landingUrl =
+                                    "https://d3azj019jffdzq.cloudfront.net";
+                            }
                             logout({
                                 logoutParams: {
                                     returnTo: landingUrl,
                                 },
-                            })
+                            });
                         }}
                         className="text-gray-500 hover:bg-zinc-100 dark:hover:bg-gray-700 active:bg-zinc-200 dark:active:bg-gray-400 rounded-lg transition-all ml-5 w-5/6 px-4 py-1.5 flex items-center text-[16px] duration-300"
                     >
