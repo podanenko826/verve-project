@@ -4,14 +4,22 @@ import prisma from "../prisma/client.ts";
 import { Status } from "../types/index.ts";
 
 export const getEventById = async (req: Request, res: Response) => {
+    const userId = (req as any).auth?.payload?.sub;
+    if (!userId) {
+        return res.status(401).json({ error: "Unauthorized: Missing user ID" });
+    }
+
     const idParam = req.params.id;
     if (typeof idParam !== "string") {
         return res.status(400).json({ error: "Invalid ID parameter" });
     }
 
     const eventId = parseInt(idParam);
-    const event = await prisma.event.findUnique({
-        where: { id: eventId },
+    const event = await prisma.event.findFirst({
+        where: {
+            id: eventId,
+            userId: userId,
+        },
     });
 
     if (!event) {
@@ -22,6 +30,11 @@ export const getEventById = async (req: Request, res: Response) => {
 };
 
 export const getEvents = async (req: Request, res: Response) => {
+    const userId = (req as any).auth?.payload?.sub;
+    if (!userId) {
+        return res.status(401).json({ error: "Unauthorized: Missing user ID" });
+    }
+
     const parsedLimit =
         typeof req.query.limit === "string"
             ? parseInt(req.query.limit, 10)
@@ -38,6 +51,7 @@ export const getEvents = async (req: Request, res: Response) => {
         },
         where: {
             status: { not: Status.ARCHIVED },
+            userId: userId,
         },
     });
 
@@ -78,7 +92,7 @@ export const createEvent = async (req: Request, res: Response) => {
         const newEvent = await prisma.event.create({
             data: payloadToSave,
         });
-        
+
         console.log("[DEBUG] createEvent DB response:", newEvent);
 
         return res.status(201).json(newEvent);

@@ -32,13 +32,14 @@ router.use(syncUser);
 // archived events routes
 router.get("/archive", getArchivedEvents);
 
-router.get("/:id", getEventById);
 router.get("/", getEvents);
 
 router.post("/", createEvent);
 
+router.get("/:id", getEventById);
+
 router.put("/:id", updateEvent);
 
-router.delete("/:id", requireRole('Admin'), deleteEvent);
+router.delete("/:id", requireRole("Admin"), deleteEvent);
 
 export default router;
