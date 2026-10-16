@@ -40,6 +40,6 @@ router.get("/:id", getEventById);
 
 router.put("/:id", updateEvent);
 
-router.delete("/:id", requireRole("Admin"), deleteEvent);
+router.delete("/:id", deleteEvent);
 
 export default router;
