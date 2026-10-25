@@ -185,7 +185,7 @@ VITE_API_URL="https://vc9l9n9pua.execute-api.eu-west-1.amazonaws.com/dev"
 
 The project uses GitHub Actions for continuous integration and deployment.
 
-[image: GitHub Actions Pipeline Runs]
+<img width="659" height="343" alt="Screenshot 2026-10-25 at 17 54 23" src="https://github.com/user-attachments/assets/77394d44-5fd8-41d0-97f8-50e1d8d35622" />
 
 1. **Continuous Integration (`.github/workflows/ci.yml`):**
     - Runs on every push and pull request targeting `main`.
@@ -219,11 +219,11 @@ All endpoints except `/api/events/test` require a valid Auth0 JWT in the `Author
 
 | Section            | Preview                          |
 | :----------------- | :------------------------------- |
-| Calendar View      | [image: Main Calendar Interface] |
-| Event Form         | [image: Event Creation Form]     |
-| Event Details      | [image: Detailed Event View]     |
-| Archive Management | [image: Archived Events View]    |
-| Account Settings   | [image: Account Settings Page]   |
+| Calendar View      | <img width="2056" height="1126" alt="Screenshot 2026-10-25 at 17 56 06" src="https://github.com/user-attachments/assets/84325c9e-9193-4c97-8378-40de61e5c850" /> |
+| Event Form         | <img width="704" height="614" alt="Screenshot 2026-10-25 at 17 57 00" src="https://github.com/user-attachments/assets/c764b213-abd4-4599-a37b-7cb04e307c64" /> |
+| Event Details      | <img width="2056" height="1126" alt="Screenshot 2026-10-25 at 17 57 40" src="https://github.com/user-attachments/assets/a74a1b08-8d08-473e-ba99-a903274e5817" /> |
+| Archive Management | <img width="2056" height="1126" alt="Screenshot 2026-10-25 at 17 59 19" src="https://github.com/user-attachments/assets/5cfe0fa6-3c74-47cb-a91d-bdf4198d7243" /> |
+| Account Settings   | <img width="2056" height="1126" alt="Screenshot 2026-10-25 at 17 59 49" src="https://github.com/user-attachments/assets/b0201405-0969-44b9-8f1b-bbcaebdc5ebb" /> |
 
 ---
 
